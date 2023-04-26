@@ -5,8 +5,8 @@ CREATE TABLE Drone (
     id int AUTO_INCREMENT,
     serial_number varchar(100) not null,
     model varchar(50) not null,
-    current_battery_capacity int not null,
-    status varchar(50) not null,
+    current_battery_capacity int not null default 100,
+    status varchar(50) not null default 'IDLE',
     PRIMARY KEY (id)
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE Medication (
 CREATE TABLE Drone_Load (
     id int AUTO_INCREMENT,
     drone_id int not null,
-    start_time timestamp not null,
+    start_time timestamp not null default current_timestamp,
     end_time timestamp,
     PRIMARY KEY (id),
     CONSTRAINT fk_Drone_Load_Drone
