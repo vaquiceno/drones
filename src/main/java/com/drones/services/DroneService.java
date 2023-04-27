@@ -3,6 +3,7 @@ package com.drones.services;
 import com.drones.models.database.Drone;
 import com.drones.repositories.DroneRepository;
 import org.springframework.stereotype.Service;
+import static com.drones.models.database.Drone.Status.IDLE;
 
 import java.util.List;
 
@@ -19,6 +20,6 @@ public class DroneService {
     }
 
     public List<Drone> findAvailableDrones(){
-        return droneRepository.findByStatus("IDLE");
+        return droneRepository.findByStatus(IDLE);
     }
 }

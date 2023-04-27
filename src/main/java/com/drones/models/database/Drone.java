@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.Column;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 @Entity
 @Table( name = "Drone")
@@ -21,8 +23,9 @@ public class Drone {
     private String model;
     @Column(name = "current_battery_capacity")
     private Integer currentBatteryCapacity;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private Status status;
 
     public Integer getId() {
         return id;
@@ -56,11 +59,15 @@ public class Drone {
         this.currentBatteryCapacity = currentBatteryCapacity;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public enum Status {
+        IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING
     }
 }
