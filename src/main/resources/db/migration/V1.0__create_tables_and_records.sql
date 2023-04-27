@@ -5,8 +5,8 @@ CREATE TABLE Drone (
     id int AUTO_INCREMENT,
     serial_number varchar(100) not null,
     model varchar(50) not null,
-    current_battery_capacity int not null default 100,
-    status varchar(50) not null default 'IDLE',
+    current_battery_capacity int default 100,
+    status varchar(50) default 'IDLE',
     PRIMARY KEY (id)
 );
 
@@ -43,8 +43,8 @@ CREATE TABLE Drone_Load_Medication (
         	  REFERENCES Medication(id)
 );
 
-INSERT INTO Drone (serial_number, model, current_battery_capacity, status) values ('KSDFMFOSDFOSDFP', 'Lightweight', 100, 'IDLE');
-INSERT INTO Drone (serial_number, model, current_battery_capacity, status) values ('dfvhhjmnghn', 'Middleweight', 50, 'IDLE');
+INSERT INTO Drone (serial_number, model) values ('KSDFMFOSDFOSDFP', 'Lightweight');
+INSERT INTO Drone (serial_number, model, current_battery_capacity) values ('dfvhhjmnghn', 'Middleweight', 50);
 
 INSERT INTO Medication (name, weight, code, image_url) values ('milk', 100, '5k_hg', 'url/1.png');
 INSERT INTO Medication (name, weight, code, image_url) values ('apple', 20, 'gdfg14_hg', null);

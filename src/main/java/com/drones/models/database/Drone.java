@@ -28,6 +28,16 @@ public class Drone {
     @Column(name = "status")
     private Status status;
 
+    public Drone() {
+    }
+
+    public Drone(String serialNumber, Model model, Integer currentBatteryCapacity, Status status) {
+        this.serialNumber = serialNumber;
+        this.model = model;
+        this.currentBatteryCapacity = currentBatteryCapacity;
+        this.status = status;
+    }
+
     public Integer getId() {
         return id;
     }
