@@ -8,6 +8,7 @@ public class DroneRequest {
     @NotBlank(message = "serial number required")
     private String serialNumber;
     private Model model;
+    private Integer weightLimit;
     private Integer currentBatteryCapacity;
     private Status status;
 
@@ -25,6 +26,14 @@ public class DroneRequest {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    public Integer getWeightLimit() {
+        return weightLimit;
+    }
+
+    public void setWeightLimit(Integer weightLimit) {
+        this.weightLimit = weightLimit;
     }
 
     public Integer getCurrentBatteryCapacity() {

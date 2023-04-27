@@ -5,6 +5,7 @@ CREATE TABLE Drone (
     id int AUTO_INCREMENT,
     serial_number varchar(100) not null,
     model varchar(50) not null,
+    weight_limit int default 500,
     current_battery_capacity int default 100,
     status varchar(50) default 'IDLE',
     PRIMARY KEY (id)

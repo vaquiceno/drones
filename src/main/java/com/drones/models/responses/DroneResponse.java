@@ -4,17 +4,15 @@ public class DroneResponse {
     private Integer id;
     private String serialNumber;
     private String model;
+    private Integer weightLimit;
     private Integer currentBatteryCapacity;
     private String status;
 
-    public DroneResponse(Integer id,
-                         String serialNumber,
-                         String model,
-                         Integer currentBatteryCapacity,
-                         String status) {
+    public DroneResponse(Integer id, String serialNumber, String model, Integer weightLimit, Integer currentBatteryCapacity, String status) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.model = model;
+        this.weightLimit = weightLimit;
         this.currentBatteryCapacity = currentBatteryCapacity;
         this.status = status;
     }
@@ -41,6 +39,14 @@ public class DroneResponse {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public Integer getWeightLimit() {
+        return weightLimit;
+    }
+
+    public void setWeightLimit(Integer weightLimit) {
+        this.weightLimit = weightLimit;
     }
 
     public Integer getCurrentBatteryCapacity() {

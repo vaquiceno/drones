@@ -22,6 +22,8 @@ public class Drone {
     @Enumerated(EnumType.STRING)
     @Column(name = "model")
     private Model model;
+    @Column(name = "weight_limit")
+    private Integer weightLimit;
     @Column(name = "current_battery_capacity")
     private Integer currentBatteryCapacity;
     @Enumerated(EnumType.STRING)
@@ -31,9 +33,10 @@ public class Drone {
     public Drone() {
     }
 
-    public Drone(String serialNumber, Model model, Integer currentBatteryCapacity, Status status) {
+    public Drone(String serialNumber, Model model, Integer weightLimit, Integer currentBatteryCapacity, Status status) {
         this.serialNumber = serialNumber;
         this.model = model;
+        this.weightLimit = weightLimit;
         this.currentBatteryCapacity = currentBatteryCapacity;
         this.status = status;
     }
@@ -60,6 +63,14 @@ public class Drone {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    public Integer getWeightLimit() {
+        return weightLimit;
+    }
+
+    public void setWeightLimit(Integer weightLimit) {
+        this.weightLimit = weightLimit;
     }
 
     public Integer getCurrentBatteryCapacity() {
