@@ -19,8 +19,9 @@ public class Drone {
     private Integer id;
     @Column(name = "serial_number")
     private String serialNumber;
+    @Enumerated(EnumType.STRING)
     @Column(name = "model")
-    private String model;
+    private Model model;
     @Column(name = "current_battery_capacity")
     private Integer currentBatteryCapacity;
     @Enumerated(EnumType.STRING)
@@ -43,11 +44,11 @@ public class Drone {
         this.serialNumber = serialNumber;
     }
 
-    public String getModel() {
+    public Model getModel() {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(Model model) {
         this.model = model;
     }
 
@@ -69,5 +70,9 @@ public class Drone {
 
     public enum Status {
         IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING
+    }
+
+    public enum Model {
+        Lightweight, Middleweight, Cruiserweight, Heavyweight
     }
 }
