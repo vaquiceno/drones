@@ -1,5 +1,7 @@
 package com.drones.controllers;
 
+import com.drones.models.Exceptions.DroneGeneralException;
+import com.drones.models.requests.DroneLoadMedicationsRequest;
 import com.drones.models.requests.DroneRequest;
 import com.drones.models.responses.DroneResponse;
 import com.drones.services.DroneService;
@@ -36,5 +38,12 @@ public class DroneController {
     @PostMapping("/register")
     public ResponseEntity<DroneResponse> registerDrone(@Valid @RequestBody final DroneRequest request){
         return new ResponseEntity<>(droneService.registerDrone(request), HttpStatus.OK);
+    }
+
+    @PostMapping("/load")
+    public ResponseEntity<DroneResponse> loadDrone(@Valid @RequestBody final DroneLoadMedicationsRequest request)
+            throws DroneGeneralException {
+        droneService.loadDrone(request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

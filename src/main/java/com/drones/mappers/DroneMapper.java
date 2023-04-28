@@ -1,8 +1,10 @@
 package com.drones.mappers;
 
+import com.drones.models.Exceptions.DroneGeneralException;
 import com.drones.models.database.Drone;
 import com.drones.models.requests.DroneRequest;
 import com.drones.models.responses.DroneResponse;
+import com.drones.models.responses.ErrorResponse;
 import org.springframework.stereotype.Component;
 
 import static com.drones.models.database.Drone.Model;
@@ -25,5 +27,9 @@ public class DroneMapper {
                 droneRequest.getWeightLimit(),
                 droneRequest.getCurrentBatteryCapacity(),
                 Status.valueOf(droneRequest.getStatus()));
+    }
+
+    public ErrorResponse toErrorResponse(DroneGeneralException e){
+        return new ErrorResponse(e.getMessage());
     }
 }

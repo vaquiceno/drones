@@ -12,12 +12,11 @@ CREATE TABLE Drone (
 );
 
 CREATE TABLE Medication (
-    id int AUTO_INCREMENT,
+    code varchar(255) not null,
     name varchar(255) not null,
     weight int not null,
-    code varchar(255) not null,
     image_url varchar(255),
-    PRIMARY KEY (id)
+    PRIMARY KEY (code)
 );
 
 CREATE TABLE Drone_Load (
@@ -33,21 +32,16 @@ CREATE TABLE Drone_Load (
 
 CREATE TABLE Drone_Load_Medication (
     drone_load_id int,
-    medication_id int,
+    medication_code int,
     amount int,
-    PRIMARY KEY (drone_load_id, medication_id),
+    PRIMARY KEY (drone_load_id, medication_code),
     CONSTRAINT fk_Drone_Load_Medication_Drone_Load
               FOREIGN KEY(drone_load_id)
         	  REFERENCES Drone_Load(id),
     CONSTRAINT fk_Drone_Load_Medication_Medication
-              FOREIGN KEY(medication_id)
-        	  REFERENCES Medication(id)
+              FOREIGN KEY(medication_code)
+        	  REFERENCES Medication(code)
 );
 
 INSERT INTO Drone (serial_number, model) values ('KSDFMFOSDFOSDFP', 'Lightweight');
 INSERT INTO Drone (serial_number, model, current_battery_capacity) values ('dfvhhjmnghn', 'Middleweight', 50);
-
-INSERT INTO Medication (name, weight, code, image_url) values ('milk', 100, '5k_hg', 'url/1.png');
-INSERT INTO Medication (name, weight, code, image_url) values ('apple', 20, 'gdfg14_hg', null);
-INSERT INTO Medication (name, weight, code, image_url) values ('coffee', 100, '5k_hggg', 'url/2.jpg');
-INSERT INTO Medication (name, weight, code, image_url) values ('sugar', 20, 'gdfg14hj_hg', null);
