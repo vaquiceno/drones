@@ -10,6 +10,7 @@ import com.drones.models.database.Medication;
 import com.drones.models.requests.DroneLoadMedicationsRequest;
 import com.drones.models.requests.DroneRequest;
 import com.drones.models.requests.MedicationRequest;
+import com.drones.models.responses.DroneLoadResponse;
 import com.drones.models.responses.DroneResponse;
 import com.drones.repositories.DroneLoadRepository;
 import com.drones.repositories.DroneRepository;
@@ -82,7 +83,7 @@ public class DroneService {
     }
 
     @Transactional
-    public DroneResponse loadingDrone(DroneLoadMedicationsRequest droneLoadMedicationsRequest) throws DroneGeneralException {
+    public DroneLoadResponse loadingDrone(DroneLoadMedicationsRequest droneLoadMedicationsRequest) throws DroneGeneralException {
         // check for not repeated codes in medications list
         Set<String> codesSet = droneLoadMedicationsRequest.getMedicationRequest().stream()
                 .map(MedicationRequest::getCode)
@@ -128,38 +129,37 @@ public class DroneService {
         drone.addDroneLoad(finalDroneLoad);
         // set drone Status to LOADING
         drone.setStatus(LOADING);
-        return droneMapper.toResponse(
-                droneRepository.save(drone)
-        );
+        return droneMapper.toResponse(droneLoad);
     }
 
-    private Drone validateDrone(Integer droneId) throws DroneGeneralException {
+    private DroneLoad validateAndGetDroneLoad(Integer droneId) throws DroneGeneralException {
         //look for Drone
         Drone drone = droneRepository.findById(droneId)
                 .orElseThrow(() -> new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND));
         //check just one DroneLoad is active for this Drone
-        List<DroneLoad> notFinishedLoads = droneLoadRepository.findByDroneAndEndTimeNull(drone);
-        if (notFinishedLoads.size() != 1)
+        List<DroneLoad> activeLoads = droneLoadRepository.findByDroneAndEndTimeNull(drone);
+        if (activeLoads.size() != 1)
             throw new DroneGeneralException(ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS);
-        return drone;
+        return activeLoads.get(0);
     }
 
     @Transactional
-    public DroneResponse loadedDrone(Integer droneId) throws DroneGeneralException {
-        Drone drone = validateDrone(droneId);
+    public DroneLoadResponse loadedDrone(Integer droneId) throws DroneGeneralException {
+        DroneLoad droneLoad = validateAndGetDroneLoad(droneId);
+        Drone drone = droneLoad.getDrone();
         //check drone status
         if (drone.getStatus() != LOADING)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_LOADING);
         // set drone Status to LOADED
         drone.setStatus(LOADED);
-        return droneMapper.toResponse(
-                droneRepository.save(drone)
-        );
+        droneRepository.save(drone);
+        return droneMapper.toResponse(droneLoad);
     }
 
     @Transactional
-    public DroneResponse deliveringDrone(Integer droneId) throws DroneGeneralException {
-        Drone drone = validateDrone(droneId);
+    public DroneLoadResponse deliveringDrone(Integer droneId) throws DroneGeneralException {
+        DroneLoad droneLoad = validateAndGetDroneLoad(droneId);
+        Drone drone = droneLoad.getDrone();
         //check drone status
         if (drone.getStatus() != LOADED)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_LOADED);
@@ -168,27 +168,25 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
         // set drone Status to DELIVERING
         drone.setStatus(DELIVERING);
-        return droneMapper.toResponse(
-                droneRepository.save(drone)
-        );
+        return droneMapper.toResponse(droneLoad);
     }
 
     @Transactional
-    public DroneResponse deliveredDrone(Integer droneId) throws DroneGeneralException {
-        Drone drone = validateDrone(droneId);
+    public DroneLoadResponse deliveredDrone(Integer droneId) throws DroneGeneralException {
+        DroneLoad droneLoad = validateAndGetDroneLoad(droneId);
+        Drone drone = droneLoad.getDrone();
         //check drone status
         if (drone.getStatus() != DELIVERING)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERING);
         // set drone Status to DELIVERED
         drone.setStatus(DELIVERED);
-        return droneMapper.toResponse(
-                droneRepository.save(drone)
-        );
+        return droneMapper.toResponse(droneLoad);
     }
 
     @Transactional
-    public DroneResponse returningDrone(Integer droneId) throws DroneGeneralException {
-        Drone drone = validateDrone(droneId);
+    public DroneLoadResponse returningDrone(Integer droneId) throws DroneGeneralException {
+        DroneLoad droneLoad = validateAndGetDroneLoad(droneId);
+        Drone drone = droneLoad.getDrone();
         //check drone status
         if (drone.getStatus() != DELIVERED)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERED);
@@ -197,14 +195,13 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
         // set drone Status to RETURNING
         drone.setStatus(RETURNING);
-        return droneMapper.toResponse(
-                droneRepository.save(drone)
-        );
+        return droneMapper.toResponse(droneLoad);
     }
 
     @Transactional
-    public DroneResponse idleDrone(Integer droneId) throws DroneGeneralException {
-        Drone drone = validateDrone(droneId);
+    public DroneLoadResponse idleDrone(Integer droneId) throws DroneGeneralException {
+        DroneLoad droneLoad = validateAndGetDroneLoad(droneId);
+        Drone drone = droneLoad.getDrone();
         //check drone status
         if (drone.getStatus() != RETURNING)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_RETURNING);
@@ -214,8 +211,6 @@ public class DroneService {
         droneLoadRepository.save(currentLoad);
         // set drone Status to IDLE
         drone.setStatus(IDLE);
-        return droneMapper.toResponse(
-                droneRepository.save(drone)
-        );
+        return droneMapper.toResponse(currentLoad);
     }
 }

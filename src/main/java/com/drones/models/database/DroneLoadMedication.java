@@ -36,4 +36,28 @@ public class DroneLoadMedication implements Serializable {
         this.medication = medication;
         this.amount = amount;
     }
+
+    public DroneLoad getDroneLoad() {
+        return droneLoad;
+    }
+
+    public void setDroneLoad(DroneLoad droneLoad) {
+        this.droneLoad = droneLoad;
+    }
+
+    public Medication getMedication() {
+        return medication;
+    }
+
+    public void setMedication(Medication medication) {
+        this.medication = medication;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
 }

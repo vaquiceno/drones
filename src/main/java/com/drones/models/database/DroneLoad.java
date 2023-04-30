@@ -79,4 +79,12 @@ public class DroneLoad {
             droneLoadMedications = new ArrayList<>();
         droneLoadMedications.add(droneLoadMedication);
     }
+
+    public List<DroneLoadMedication> getDroneLoadMedications() {
+        return droneLoadMedications;
+    }
+
+    public void setDroneLoadMedications(List<DroneLoadMedication> droneLoadMedications) {
+        this.droneLoadMedications = droneLoadMedications;
+    }
 }

@@ -3,6 +3,7 @@ package com.drones.controllers;
 import com.drones.models.Exceptions.DroneGeneralException;
 import com.drones.models.requests.DroneLoadMedicationsRequest;
 import com.drones.models.requests.DroneRequest;
+import com.drones.models.responses.DroneLoadResponse;
 import com.drones.models.responses.DroneResponse;
 import com.drones.services.DroneService;
 import org.springframework.http.HttpStatus;
@@ -43,37 +44,37 @@ public class DroneController {
     }
 
     @PostMapping("/loading")
-    public ResponseEntity<DroneResponse> loadingDrone(@Valid @RequestBody final DroneLoadMedicationsRequest request)
+    public ResponseEntity<DroneLoadResponse> loadingDrone(@Valid @RequestBody final DroneLoadMedicationsRequest request)
             throws DroneGeneralException {
         return new ResponseEntity<>(droneService.loadingDrone(request), HttpStatus.OK);
     }
 
     @PutMapping("/loaded/{droneId}")
-    public ResponseEntity<DroneResponse> loadedDrone(@PathVariable("droneId") final Integer droneId)
+    public ResponseEntity<DroneLoadResponse> loadedDrone(@PathVariable("droneId") final Integer droneId)
             throws DroneGeneralException {
         return new ResponseEntity<>(droneService.loadedDrone(droneId), HttpStatus.OK);
     }
 
     @PutMapping("/delivering/{droneId}")
-    public ResponseEntity<DroneResponse> deliveringDrone(@PathVariable("droneId") final Integer droneId)
+    public ResponseEntity<DroneLoadResponse> deliveringDrone(@PathVariable("droneId") final Integer droneId)
             throws DroneGeneralException {
         return new ResponseEntity<>(droneService.deliveringDrone(droneId), HttpStatus.OK);
     }
 
     @PutMapping("/delivered/{droneId}")
-    public ResponseEntity<DroneResponse> deliveredDrone(@PathVariable("droneId") final Integer droneId)
+    public ResponseEntity<DroneLoadResponse> deliveredDrone(@PathVariable("droneId") final Integer droneId)
             throws DroneGeneralException {
         return new ResponseEntity<>(droneService.deliveredDrone(droneId), HttpStatus.OK);
     }
 
     @PutMapping("/returning/{droneId}")
-    public ResponseEntity<DroneResponse> returningDrone(@PathVariable("droneId") final Integer droneId)
+    public ResponseEntity<DroneLoadResponse> returningDrone(@PathVariable("droneId") final Integer droneId)
             throws DroneGeneralException {
         return new ResponseEntity<>(droneService.returningDrone(droneId), HttpStatus.OK);
     }
 
     @PutMapping("/idle/{droneId}")
-    public ResponseEntity<DroneResponse> idleDrone(@PathVariable("droneId") final Integer droneId)
+    public ResponseEntity<DroneLoadResponse> idleDrone(@PathVariable("droneId") final Integer droneId)
             throws DroneGeneralException {
         return new ResponseEntity<>(droneService.idleDrone(droneId), HttpStatus.OK);
     }
