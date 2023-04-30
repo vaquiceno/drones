@@ -10,4 +10,5 @@ public final class Constants {
     public static final String ERROR_MESSAGE_DUPLICATED_CODES_MEDICATIONS = "There are codes duplicated in medications";
     public static final String ERROR_MESSAGE_MINIMUM_BATTERY = "Drone battery is below " + DEFAULT_DRONE_MINIMUM_BATTERY + "%";
     public static final String ERROR_MESSAGE_NOT_IDLE = "Drone Status is not IDLE, can not carry medications";
+    public static final String ERROR_MESSAGE_UNFINISHED_LOAD = "Drone has a Load that is not finished yet";
 }
