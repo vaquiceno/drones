@@ -142,6 +142,10 @@ public class DroneService {
         return activeLoads.get(0);
     }
 
+    public DroneLoadResponse loadedMedications(Integer droneId) throws DroneGeneralException {
+        return droneMapper.toResponse(validateAndGetDroneLoad(droneId));
+    }
+
     @Transactional
     public DroneLoadResponse loadedDrone(Integer droneId) throws DroneGeneralException {
         DroneLoad droneLoad = validateAndGetDroneLoad(droneId);
