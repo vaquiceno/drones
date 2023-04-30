@@ -72,7 +72,7 @@ public class DroneService {
     }
 
     @Transactional
-    public void loadDrone(DroneLoadMedicationsRequest droneLoadMedicationsRequest) throws DroneGeneralException {
+    public DroneResponse loadDrone(DroneLoadMedicationsRequest droneLoadMedicationsRequest) throws DroneGeneralException {
         // check for not repeated codes in medications list
         Set<String> codesSet = droneLoadMedicationsRequest.getMedicationRequest().stream()
                 .map(MedicationRequest::getCode)
@@ -99,6 +99,7 @@ public class DroneService {
         // check for weight limit
         if (totalWeight > drone.getWeightLimit())
             throw new DroneGeneralException(ERROR_MESSAGE_WEIGHT_LIMIT);
+        //all validations have passed
         //save all medications
         List<Medication> medications = droneLoadMedicationsRequest.getMedicationRequest().stream().map(
                 medicationMapper::toDatabase
@@ -117,6 +118,8 @@ public class DroneService {
         drone.addDroneLoad(finalDroneLoad);
         // set drone Status to LOADING
         drone.setStatus(LOADING);
-        droneRepository.save(drone);
+        return droneMapper.toResponse(
+                droneRepository.save(drone)
+        );
     }
 }

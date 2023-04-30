@@ -43,7 +43,6 @@ public class DroneController {
     @PostMapping("/load")
     public ResponseEntity<DroneResponse> loadDrone(@Valid @RequestBody final DroneLoadMedicationsRequest request)
             throws DroneGeneralException {
-        droneService.loadDrone(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(droneService.loadDrone(request), HttpStatus.OK);
     }
 }
