@@ -43,5 +43,5 @@ CREATE TABLE Drone_Load_Medication (
         	  REFERENCES Medication(code)
 );
 
-INSERT INTO Drone (serial_number, model) values ('KSDFMFOSDFOSDFP', 'Lightweight');
-INSERT INTO Drone (serial_number, model, current_battery_capacity) values ('dfvhhjmnghn', 'Middleweight', 50);
+INSERT INTO Drone (serial_number, model) values ('sn1', 'Lightweight');
+INSERT INTO Drone (serial_number, model, current_battery_capacity) values ('sn2', 'Middleweight', 50);

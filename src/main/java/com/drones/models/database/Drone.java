@@ -8,7 +8,12 @@ import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.EnumType;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table( name = "Drone")
@@ -29,6 +34,8 @@ public class Drone {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "drone")
+    private List<DroneLoad> droneLoads;
 
     public Drone() {
     }
@@ -87,6 +94,13 @@ public class Drone {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void addDroneLoad(DroneLoad droneLoad){
+        if (null == droneLoads)
+            droneLoads = new ArrayList<>();
+        droneLoads.add(droneLoad);
+        droneLoad.setDrone(this);
     }
 
     public enum Status {
