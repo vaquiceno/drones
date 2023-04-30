@@ -126,7 +126,6 @@ public class DroneService {
                     finalDroneLoad.addDroneLoadMedication(new DroneLoadMedication(finalDroneLoad, medicationMapper.toDatabase(medication), medication.getAmount()));
                 }
             );
-        drone.addDroneLoad(finalDroneLoad);
         // set drone Status to LOADING
         drone.setStatus(LOADING);
         return droneMapper.toResponse(droneLoad);

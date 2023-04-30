@@ -34,8 +34,6 @@ public class Drone {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status = Status.IDLE;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "drone")
-    private List<DroneLoad> droneLoads;
 
     public Drone() {
     }
@@ -93,13 +91,6 @@ public class Drone {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public void addDroneLoad(DroneLoad droneLoad){
-        if (null == droneLoads)
-            droneLoads = new ArrayList<>();
-        droneLoads.add(droneLoad);
-        droneLoad.setDrone(this);
     }
 
     public enum Status {
