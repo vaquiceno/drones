@@ -4,30 +4,30 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class DroneLoadResponse {
-    private Integer id;
+    private Integer loadId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private DroneResponse droneResponse;
-    private List<DroneLoadMedicationResponse> droneLoadMedicationsResponse;
+    private DroneResponse drone;
+    private List<DroneLoadMedicationResponse> medications;
 
-    public DroneLoadResponse(Integer id,
+    public DroneLoadResponse(Integer loadId,
                              LocalDateTime startTime,
                              LocalDateTime endTime,
-                             DroneResponse droneResponse,
-                             List<DroneLoadMedicationResponse> droneLoadMedicationsResponse) {
-        this.id = id;
+                             DroneResponse drone,
+                             List<DroneLoadMedicationResponse> medications) {
+        this.loadId = loadId;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.droneResponse = droneResponse;
-        this.droneLoadMedicationsResponse = droneLoadMedicationsResponse;
+        this.drone = drone;
+        this.medications = medications;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getLoadId() {
+        return loadId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setLoadId(Integer loadId) {
+        this.loadId = loadId;
     }
 
     public LocalDateTime getStartTime() {
@@ -46,19 +46,19 @@ public class DroneLoadResponse {
         this.endTime = endTime;
     }
 
-    public DroneResponse getDroneResponse() {
-        return droneResponse;
+    public DroneResponse getDrone() {
+        return drone;
     }
 
-    public void setDroneResponse(DroneResponse droneResponse) {
-        this.droneResponse = droneResponse;
+    public void setDrone(DroneResponse drone) {
+        this.drone = drone;
     }
 
-    public List<DroneLoadMedicationResponse> getDroneLoadMedicationsResponse() {
-        return droneLoadMedicationsResponse;
+    public List<DroneLoadMedicationResponse> getMedications() {
+        return medications;
     }
 
-    public void setDroneLoadMedicationsResponse(List<DroneLoadMedicationResponse> droneLoadMedicationsResponse) {
-        this.droneLoadMedicationsResponse = droneLoadMedicationsResponse;
+    public void setMedications(List<DroneLoadMedicationResponse> medications) {
+        this.medications = medications;
     }
 }

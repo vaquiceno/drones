@@ -1,7 +1,7 @@
 package com.drones.models.responses;
 
 public class DroneResponse {
-    private Integer id;
+    private Integer droneId;
     private String serialNumber;
     private String model;
     private Integer weightLimit;
@@ -9,7 +9,7 @@ public class DroneResponse {
     private String status;
 
     public DroneResponse(Integer id, String serialNumber, String model, Integer weightLimit, Integer currentBatteryCapacity, String status) {
-        this.id = id;
+        this.droneId = id;
         this.serialNumber = serialNumber;
         this.model = model;
         this.weightLimit = weightLimit;
@@ -17,12 +17,12 @@ public class DroneResponse {
         this.status = status;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getDroneId() {
+        return droneId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setDroneId(Integer droneId) {
+        this.droneId = droneId;
     }
 
     public String getSerialNumber() {
