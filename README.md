@@ -14,6 +14,8 @@
 * serial number for drones are not unique
 * Drones should have a minimum weight limit of 100gr
 * Only Drones with status IDLE can be loaded with medications
+* Drone can not be LOADING, DELIVERING or RETURNING if the battery level is below 25%
+* only way Drone return to IDLE status is after RETURNING is finished
 * images are stored as URL for medications, and can be null
 * Medications have unique code (Primary key) and are stored in database when loading Drones method is executed
 * if a medication already exists and new medication with same code but different properties(i.e. name, weight) is loaded, the medication is replaced in database

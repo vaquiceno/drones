@@ -20,6 +20,10 @@ import javax.transaction.Transactional;
 
 import static com.drones.models.database.Drone.Status.IDLE;
 import static com.drones.models.database.Drone.Status.LOADING;
+import static com.drones.models.database.Drone.Status.LOADED;
+import static com.drones.models.database.Drone.Status.DELIVERING;
+import static com.drones.models.database.Drone.Status.DELIVERED;
+import static com.drones.models.database.Drone.Status.RETURNING;
 import static com.drones.utils.Constants.ERROR_MESSAGE_DRONE_NOT_FOUND;
 import static com.drones.utils.Constants.ERROR_MESSAGE_TOTAL_WEIGHT_MEDICATIONS;
 import static com.drones.utils.Constants.ERROR_MESSAGE_WEIGHT_LIMIT;
@@ -27,7 +31,13 @@ import static com.drones.utils.Constants.ERROR_MESSAGE_DUPLICATED_CODES_MEDICATI
 import static com.drones.utils.Constants.DEFAULT_DRONE_MINIMUM_BATTERY;
 import static com.drones.utils.Constants.ERROR_MESSAGE_MINIMUM_BATTERY;
 import static com.drones.utils.Constants.ERROR_MESSAGE_NOT_IDLE;
-import static com.drones.utils.Constants.ERROR_MESSAGE_UNFINISHED_LOAD;
+import static com.drones.utils.Constants.ERROR_MESSAGE_NOT_LOADING;
+import static com.drones.utils.Constants.ERROR_MESSAGE_NOT_LOADED;
+import static com.drones.utils.Constants.ERROR_MESSAGE_NOT_DELIVERING;
+import static com.drones.utils.Constants.ERROR_MESSAGE_NOT_DELIVERED;
+import static com.drones.utils.Constants.ERROR_MESSAGE_NOT_RETURNING;
+import static com.drones.utils.Constants.ERROR_MESSAGE_ONE_MORE_ACTIVE_LOADS;
+import static com.drones.utils.Constants.ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,7 +82,7 @@ public class DroneService {
     }
 
     @Transactional
-    public DroneResponse loadDrone(DroneLoadMedicationsRequest droneLoadMedicationsRequest) throws DroneGeneralException {
+    public DroneResponse loadingDrone(DroneLoadMedicationsRequest droneLoadMedicationsRequest) throws DroneGeneralException {
         // check for not repeated codes in medications list
         Set<String> codesSet = droneLoadMedicationsRequest.getMedicationRequest().stream()
                 .map(MedicationRequest::getCode)
@@ -85,7 +95,7 @@ public class DroneService {
         //check all DroneLoads are finished for this Drone (endTime not null)
         List<DroneLoad> notFinishedLoads = droneLoadRepository.findByDroneAndEndTimeNull(drone);
         if (notFinishedLoads.size() >= 1)
-            throw new DroneGeneralException(ERROR_MESSAGE_UNFINISHED_LOAD);
+            throw new DroneGeneralException(ERROR_MESSAGE_ONE_MORE_ACTIVE_LOADS);
         //check drone status
         if (drone.getStatus() != IDLE)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_IDLE);
@@ -118,6 +128,92 @@ public class DroneService {
         drone.addDroneLoad(finalDroneLoad);
         // set drone Status to LOADING
         drone.setStatus(LOADING);
+        return droneMapper.toResponse(
+                droneRepository.save(drone)
+        );
+    }
+
+    private Drone validateDrone(Integer droneId) throws DroneGeneralException {
+        //look for Drone
+        Drone drone = droneRepository.findById(droneId)
+                .orElseThrow(() -> new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND));
+        //check just one DroneLoad is active for this Drone
+        List<DroneLoad> notFinishedLoads = droneLoadRepository.findByDroneAndEndTimeNull(drone);
+        if (notFinishedLoads.size() != 1)
+            throw new DroneGeneralException(ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS);
+        return drone;
+    }
+
+    @Transactional
+    public DroneResponse loadedDrone(Integer droneId) throws DroneGeneralException {
+        Drone drone = validateDrone(droneId);
+        //check drone status
+        if (drone.getStatus() != LOADING)
+            throw new DroneGeneralException(ERROR_MESSAGE_NOT_LOADING);
+        // set drone Status to LOADED
+        drone.setStatus(LOADED);
+        return droneMapper.toResponse(
+                droneRepository.save(drone)
+        );
+    }
+
+    @Transactional
+    public DroneResponse deliveringDrone(Integer droneId) throws DroneGeneralException {
+        Drone drone = validateDrone(droneId);
+        //check drone status
+        if (drone.getStatus() != LOADED)
+            throw new DroneGeneralException(ERROR_MESSAGE_NOT_LOADED);
+        //check battery
+        if (drone.getCurrentBatteryCapacity() < DEFAULT_DRONE_MINIMUM_BATTERY)
+            throw new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
+        // set drone Status to DELIVERING
+        drone.setStatus(DELIVERING);
+        return droneMapper.toResponse(
+                droneRepository.save(drone)
+        );
+    }
+
+    @Transactional
+    public DroneResponse deliveredDrone(Integer droneId) throws DroneGeneralException {
+        Drone drone = validateDrone(droneId);
+        //check drone status
+        if (drone.getStatus() != DELIVERING)
+            throw new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERING);
+        // set drone Status to DELIVERED
+        drone.setStatus(DELIVERED);
+        return droneMapper.toResponse(
+                droneRepository.save(drone)
+        );
+    }
+
+    @Transactional
+    public DroneResponse returningDrone(Integer droneId) throws DroneGeneralException {
+        Drone drone = validateDrone(droneId);
+        //check drone status
+        if (drone.getStatus() != DELIVERED)
+            throw new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERED);
+        //check battery
+        if (drone.getCurrentBatteryCapacity() < DEFAULT_DRONE_MINIMUM_BATTERY)
+            throw new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
+        // set drone Status to RETURNING
+        drone.setStatus(RETURNING);
+        return droneMapper.toResponse(
+                droneRepository.save(drone)
+        );
+    }
+
+    @Transactional
+    public DroneResponse idleDrone(Integer droneId) throws DroneGeneralException {
+        Drone drone = validateDrone(droneId);
+        //check drone status
+        if (drone.getStatus() != RETURNING)
+            throw new DroneGeneralException(ERROR_MESSAGE_NOT_RETURNING);
+        // set end time for this load
+        DroneLoad currentLoad = droneLoadRepository.findByDroneAndEndTimeNull(drone).get(0);
+        currentLoad.setEndTime(LocalDateTime.now());
+        droneLoadRepository.save(currentLoad);
+        // set drone Status to IDLE
+        drone.setStatus(IDLE);
         return droneMapper.toResponse(
                 droneRepository.save(drone)
         );
