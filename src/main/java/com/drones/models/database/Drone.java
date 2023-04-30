@@ -33,19 +33,18 @@ public class Drone {
     private Integer currentBatteryCapacity;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status;
+    private Status status = Status.IDLE;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "drone")
     private List<DroneLoad> droneLoads;
 
     public Drone() {
     }
 
-    public Drone(String serialNumber, Model model, Integer weightLimit, Integer currentBatteryCapacity, Status status) {
+    public Drone(String serialNumber, Model model, Integer weightLimit, Integer currentBatteryCapacity) {
         this.serialNumber = serialNumber;
         this.model = model;
         this.weightLimit = weightLimit;
         this.currentBatteryCapacity = currentBatteryCapacity;
-        this.status = status;
     }
 
     public Integer getId() {

@@ -54,8 +54,7 @@ public class DroneMapper {
         return new Drone(droneRequest.getSerialNumber(),
                 Model.valueOf(droneRequest.getModel()),
                 droneRequest.getWeightLimit(),
-                droneRequest.getCurrentBatteryCapacity(),
-                Status.valueOf(droneRequest.getStatus()));
+                droneRequest.getCurrentBatteryCapacity());
     }
 
     public ErrorResponse toErrorResponse(DroneGeneralException e){

@@ -27,11 +27,6 @@ public class DroneRequest {
     @Max(value = 100, message = "Battery capacity cannot be more than 100%")
     @Min(value = 0, message = "Battery capacity cannot be less than 0%")
     private Integer currentBatteryCapacity = DEFAULT_DRONE_BATTERY_CAPACITY;
-    @EnumValidator(
-            enumClazz = Status.class,
-            message = "Invalid Status. valid options: IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING"
-    )
-    private String status = IDLE.toString();
 
     public String getSerialNumber() {
         return serialNumber;
@@ -63,13 +58,5 @@ public class DroneRequest {
 
     public void setCurrentBatteryCapacity(Integer currentBatteryCapacity) {
         this.currentBatteryCapacity = currentBatteryCapacity;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }
