@@ -1,10 +1,13 @@
 package com.drones.models.requests;
 
+import lombok.Getter;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+@Getter
 public class MedicationRequest {
     @NotBlank(message = "code is required")
     @Pattern(regexp = "^(?=.*[A-Z0-9])[A-Z0-9_]*$", message = "allowed only upper case letters, underscore and numbers")
@@ -20,44 +23,4 @@ public class MedicationRequest {
     private String imageUrl;
     @Min(value = 1, message = "amount cannot be less than 1")
     private Integer amount;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Integer weight) {
-        this.weight = weight;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
 }

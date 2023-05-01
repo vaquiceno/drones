@@ -1,6 +1,12 @@
 package com.drones.models.database;
 
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +22,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table( name = "Drone_Load")
 public class DroneLoad {
@@ -33,58 +44,9 @@ public class DroneLoad {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "droneLoad")
     private List<DroneLoadMedication> droneLoadMedications;
 
-
-    public DroneLoad() {
-    }
-
-    public DroneLoad(LocalDateTime startTime, Drone drone) {
-        this.startTime = startTime;
-        this.drone = drone;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public Drone getDrone() {
-        return drone;
-    }
-
-    public void setDrone(Drone drone) {
-        this.drone = drone;
-    }
-
     public void addDroneLoadMedication(DroneLoadMedication droneLoadMedication){
         if (null == droneLoadMedications)
             droneLoadMedications = new ArrayList<>();
         droneLoadMedications.add(droneLoadMedication);
-    }
-
-    public List<DroneLoadMedication> getDroneLoadMedications() {
-        return droneLoadMedications;
-    }
-
-    public void setDroneLoadMedications(List<DroneLoadMedication> droneLoadMedications) {
-        this.droneLoadMedications = droneLoadMedications;
     }
 }

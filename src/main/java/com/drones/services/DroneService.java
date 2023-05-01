@@ -1,7 +1,6 @@
 package com.drones.services;
 
 import com.drones.mappers.DroneMapper;
-import com.drones.mappers.MedicationMapper;
 import com.drones.models.audits.DroneBatteryAudit;
 import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.database.Drone;
@@ -54,41 +53,38 @@ public class DroneService {
     private final DroneRepository droneRepository;
     private final DroneMapper droneMapper;
     private final MedicationRepository medicationRepository;
-    private final MedicationMapper medicationMapper;
     private final DroneLoadRepository droneLoadRepository;
 
     public DroneService(DroneRepository droneRepository,
                         DroneMapper droneMapper,
                         MedicationRepository medicationRepository,
-                        MedicationMapper medicationMapper,
                         DroneLoadRepository droneLoadRepository) {
         this.droneRepository = droneRepository;
         this.droneMapper = droneMapper;
         this.medicationRepository = medicationRepository;
-        this.medicationMapper = medicationMapper;
         this.droneLoadRepository = droneLoadRepository;
     }
 
     public List<DroneResponse> findAll() {
         return StreamSupport.stream(droneRepository.findAll().spliterator(), false)
-                .map(droneMapper::toResponse).collect(Collectors.toList());
+                .map(droneMapper::toDroneResponse).collect(Collectors.toList());
     }
 
     public List<DroneResponse> findAvailableDrones(){
         return droneRepository.findByStatus(IDLE).stream()
-                .map(droneMapper::toResponse).collect(Collectors.toList());
+                .map(droneMapper::toDroneResponse).collect(Collectors.toList());
     }
 
     public DroneResponse findDrone(Integer droneId) throws DroneGeneralException {
-        return droneMapper.toResponse(
+        return droneMapper.toDroneResponse(
                 droneRepository.findById(droneId)
                         .orElseThrow(() -> new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND))
         );
     }
 
     public DroneResponse registerDrone(DroneRequest droneRequest){
-        return droneMapper.toResponse(
-                droneRepository.save(droneMapper.toDatabase(droneRequest))
+        return droneMapper.toDroneResponse(
+                droneRepository.save(droneMapper.toDrone(droneRequest))
         );
     }
 
@@ -135,22 +131,29 @@ public class DroneService {
         //all validations have passed
         //save all medications
         List<Medication> medications = droneLoadMedicationsRequest.getMedicationRequest().stream().map(
-                medicationMapper::toDatabase
+                droneMapper::toMedication
         ).collect(Collectors.toList());
         medicationRepository.saveAll(medications);
         // save Drone Load
-        DroneLoad droneLoad = new DroneLoad(LocalDateTime.now(), drone);
+        DroneLoad droneLoad = droneMapper.toDroneLoad(drone);
         droneLoad = droneLoadRepository.save(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;
         droneLoadMedicationsRequest.getMedicationRequest().forEach(
                 medication -> {
-                    finalDroneLoad.addDroneLoadMedication(new DroneLoadMedication(finalDroneLoad, medicationMapper.toDatabase(medication), medication.getAmount()));
+                    finalDroneLoad.addDroneLoadMedication(
+                            DroneLoadMedication
+                                    .builder()
+                                    .droneLoad(finalDroneLoad)
+                                    .medication(droneMapper.toMedication(medication))
+                                    .amount(medication.getAmount())
+                                    .build()
+                    );
                 }
             );
         // set drone Status to LOADING
         drone.setStatus(LOADING);
-        return droneMapper.toResponse(droneLoad);
+        return droneMapper.toDroneLoadResponse(droneLoad);
     }
 
     private DroneLoad validateAndGetDroneLoad(Integer droneId) throws DroneGeneralException {
@@ -165,7 +168,7 @@ public class DroneService {
     }
 
     public DroneLoadResponse loadedMedications(Integer droneId) throws DroneGeneralException {
-        return droneMapper.toResponse(validateAndGetDroneLoad(droneId));
+        return droneMapper.toDroneLoadResponse(validateAndGetDroneLoad(droneId));
     }
 
     @Transactional
@@ -178,7 +181,7 @@ public class DroneService {
         // set drone Status to LOADED
         drone.setStatus(LOADED);
         droneRepository.save(drone);
-        return droneMapper.toResponse(droneLoad);
+        return droneMapper.toDroneLoadResponse(droneLoad);
     }
 
     @Transactional
@@ -193,7 +196,7 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
         // set drone Status to DELIVERING
         drone.setStatus(DELIVERING);
-        return droneMapper.toResponse(droneLoad);
+        return droneMapper.toDroneLoadResponse(droneLoad);
     }
 
     @Transactional
@@ -205,7 +208,7 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERING);
         // set drone Status to DELIVERED
         drone.setStatus(DELIVERED);
-        return droneMapper.toResponse(droneLoad);
+        return droneMapper.toDroneLoadResponse(droneLoad);
     }
 
     @Transactional
@@ -220,7 +223,7 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
         // set drone Status to RETURNING
         drone.setStatus(RETURNING);
-        return droneMapper.toResponse(droneLoad);
+        return droneMapper.toDroneLoadResponse(droneLoad);
     }
 
     @Transactional
@@ -236,6 +239,6 @@ public class DroneService {
         droneLoadRepository.save(currentLoad);
         // set drone Status to IDLE
         drone.setStatus(IDLE);
-        return droneMapper.toResponse(currentLoad);
+        return droneMapper.toDroneLoadResponse(currentLoad);
     }
 }

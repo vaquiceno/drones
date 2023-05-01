@@ -1,6 +1,12 @@
 package com.drones.models.database;
 
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
@@ -10,6 +16,11 @@ import javax.persistence.Column;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table( name = "Drone")
 public class Drone {
@@ -28,65 +39,8 @@ public class Drone {
     private Integer currentBatteryCapacity;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @Builder.Default
     private Status status = Status.IDLE;
-
-    public Drone() {
-    }
-
-    public Drone(String serialNumber, Model model, Integer weightLimit, Integer currentBatteryCapacity) {
-        this.serialNumber = serialNumber;
-        this.model = model;
-        this.weightLimit = weightLimit;
-        this.currentBatteryCapacity = currentBatteryCapacity;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public Model getModel() {
-        return model;
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
-    public Integer getWeightLimit() {
-        return weightLimit;
-    }
-
-    public void setWeightLimit(Integer weightLimit) {
-        this.weightLimit = weightLimit;
-    }
-
-    public Integer getCurrentBatteryCapacity() {
-        return currentBatteryCapacity;
-    }
-
-    public void setCurrentBatteryCapacity(Integer currentBatteryCapacity) {
-        this.currentBatteryCapacity = currentBatteryCapacity;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     public enum Status {
         IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING
