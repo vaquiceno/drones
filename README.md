@@ -21,3 +21,4 @@
 * if a medication already exists and new medication with same code but different properties(i.e. name, weight) is loaded, the medication is replaced in database
 * Medication Weight cannot be more than 500g
 * Medication Weight cannot be less than 10g
+* The required periodic task only checks the battery levels of all drones and print a Json array using log4j, every 10 seconds

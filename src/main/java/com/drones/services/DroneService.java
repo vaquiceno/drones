@@ -2,6 +2,7 @@ package com.drones.services;
 
 import com.drones.mappers.DroneMapper;
 import com.drones.mappers.MedicationMapper;
+import com.drones.models.audits.DroneBatteryAudit;
 import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.database.Drone;
 import com.drones.models.database.DroneLoad;
@@ -15,6 +16,7 @@ import com.drones.models.responses.DroneResponse;
 import com.drones.repositories.DroneLoadRepository;
 import com.drones.repositories.DroneRepository;
 import com.drones.repositories.MedicationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -47,6 +49,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Slf4j
 public class DroneService {
     private final DroneRepository droneRepository;
     private final DroneMapper droneMapper;
@@ -87,6 +90,18 @@ public class DroneService {
         return droneMapper.toResponse(
                 droneRepository.save(droneMapper.toDatabase(droneRequest))
         );
+    }
+
+    public void auditDrones() {
+        List<DroneBatteryAudit> auditDrones = StreamSupport.stream(droneRepository.findAll().spliterator(), false)
+                .map(drone -> DroneBatteryAudit
+                        .builder()
+                        .droneId(drone.getId())
+                        .serialNumber(drone.getSerialNumber())
+                        .currentBatteryCapacity(drone.getCurrentBatteryCapacity())
+                        .build())
+                .collect(Collectors.toList());
+        log.info("current drones battery level: {}", auditDrones);
     }
 
     @Transactional
