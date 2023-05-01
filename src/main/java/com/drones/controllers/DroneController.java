@@ -1,6 +1,6 @@
 package com.drones.controllers;
 
-import com.drones.models.Exceptions.DroneGeneralException;
+import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.requests.DroneLoadMedicationsRequest;
 import com.drones.models.requests.DroneRequest;
 import com.drones.models.responses.DroneLoadResponse;

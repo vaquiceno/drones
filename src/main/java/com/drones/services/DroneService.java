@@ -2,7 +2,7 @@ package com.drones.services;
 
 import com.drones.mappers.DroneMapper;
 import com.drones.mappers.MedicationMapper;
-import com.drones.models.Exceptions.DroneGeneralException;
+import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.database.Drone;
 import com.drones.models.database.DroneLoad;
 import com.drones.models.database.DroneLoadMedication;

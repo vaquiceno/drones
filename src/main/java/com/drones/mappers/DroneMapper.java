@@ -1,6 +1,6 @@
 package com.drones.mappers;
 
-import com.drones.models.Exceptions.DroneGeneralException;
+import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.database.Drone;
 import com.drones.models.database.DroneLoad;
 import com.drones.models.database.DroneLoadMedication;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 import static com.drones.models.database.Drone.Model;
-import static com.drones.models.database.Drone.Status;
 
 @Component
 public class DroneMapper {

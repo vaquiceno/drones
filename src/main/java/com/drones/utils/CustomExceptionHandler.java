@@ -1,7 +1,7 @@
 package com.drones.utils;
 
 import com.drones.mappers.DroneMapper;
-import com.drones.models.Exceptions.DroneGeneralException;
+import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.responses.ErrorResponse;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
