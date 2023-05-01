@@ -8,12 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import javax.persistence.EnumType;
-import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table( name = "Drone")
