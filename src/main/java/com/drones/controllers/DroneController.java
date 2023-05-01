@@ -38,6 +38,13 @@ public class DroneController {
         return new ResponseEntity<>(droneService.findAvailableDrones(), HttpStatus.OK);
     }
 
+    @GetMapping("/request/{droneId}")
+    public ResponseEntity<DroneResponse> getDrone(
+            @PathVariable("droneId") final Integer droneId
+    ) throws DroneGeneralException {
+        return new ResponseEntity<>(droneService.findDrone(droneId), HttpStatus.OK);
+    }
+
     @GetMapping("/loaded_medications/{droneId}")
     public ResponseEntity<DroneLoadResponse> getLoadedMedications(
             @PathVariable("droneId") final Integer droneId

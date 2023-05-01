@@ -76,6 +76,13 @@ public class DroneService {
                 .map(droneMapper::toResponse).collect(Collectors.toList());
     }
 
+    public DroneResponse findDrone(Integer droneId) throws DroneGeneralException {
+        return droneMapper.toResponse(
+                droneRepository.findById(droneId)
+                        .orElseThrow(() -> new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND))
+        );
+    }
+
     public DroneResponse registerDrone(DroneRequest droneRequest){
         return droneMapper.toResponse(
                 droneRepository.save(droneMapper.toDatabase(droneRequest))
