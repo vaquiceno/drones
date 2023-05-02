@@ -1,0 +1,150 @@
+{
+	"variables": [],
+	"info": {
+		"name": "DronesCollection",
+		"_postman_id": "faf51cfc-1c6d-f50b-ccc8-c9aa64951c16",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all Drones",
+			"request": {
+				"url": "http://localhost:8080/api/drones/all",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Available Drones",
+			"request": {
+				"url": "http://localhost:8080/api/drones/available",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get particular Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/request/2",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Loaded medications for a drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/loaded_medications/2",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Register Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/register",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"serialNumber\": \"1234567890\",\n\t\"model\": \"Lightweight\",\n\t\"weightLimit\": 150,\n\t\"currentBatteryCapacity\": 80\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Loading Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/loading",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"droneId\": 1,\n\t\"medicationRequest\": [\n\t\t{\n\t\t\t\"code\": \"6985\",\n\t\t\t\"name\": \"Bread\",\n\t\t\t\"weight\": \"100\",\n\t\t\t\"amount\": \"2\",\n\t\t\t\"imageUrl\": \"https://regex101.com//img.dasd\"\n\t\t},\n\t\t{\n\t\t\t\"code\": \"69852\",\n\t\t\t\"name\": \"Vine\",\n\t\t\t\"weight\": \"50\",\n\t\t\t\"amount\": \"1\"\n\t\t},\n\t\t{\n\t\t\t\"code\": \"69853\",\n\t\t\t\"name\": \"Chicken\",\n\t\t\t\"weight\": \"20\",\n\t\t\t\"amount\": \"4\"\n\t\t}\n\t]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Loaded Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/loaded/1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delivering Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/delivering/1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delivered Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/delivered/1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Returning Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/returning/1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Idle Drone",
+			"request": {
+				"url": "http://localhost:8080/api/drones/idle/1",
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
