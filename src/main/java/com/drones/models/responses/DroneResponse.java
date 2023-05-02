@@ -1,11 +1,12 @@
 package com.drones.models.responses;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.AllArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 @Data
 public class DroneResponse {
