@@ -3,15 +3,13 @@ package com.drones.models.responses;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.AllArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class DroneLoadResponse {
     private Integer loadId;
