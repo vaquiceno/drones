@@ -234,11 +234,10 @@ public class DroneService {
         if (drone.getStatus() != RETURNING)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_RETURNING);
         // set end time for this load
-        DroneLoad currentLoad = droneLoadRepository.findByDroneAndEndTimeNull(drone).get(0);
-        currentLoad.setEndTime(LocalDateTime.now());
-        droneLoadRepository.save(currentLoad);
+        droneLoad.setEndTime(LocalDateTime.now());
+        droneLoadRepository.save(droneLoad);
         // set drone Status to IDLE
         drone.setStatus(IDLE);
-        return droneMapper.toDroneLoadResponse(currentLoad);
+        return droneMapper.toDroneLoadResponse(droneLoad);
     }
 }
