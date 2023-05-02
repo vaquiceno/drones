@@ -135,7 +135,7 @@ public class DroneService {
         ).collect(Collectors.toList());
         medicationRepository.saveAll(medications);
         // save Drone Load
-        DroneLoad droneLoad = droneMapper.toDroneLoad(drone);
+        DroneLoad droneLoad = droneMapper.toDroneLoad(drone, LocalDateTime.now());
         droneLoad = droneLoadRepository.save(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;

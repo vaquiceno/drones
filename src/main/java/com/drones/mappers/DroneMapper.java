@@ -66,10 +66,10 @@ public class DroneMapper {
                 .build();
     }
 
-    public DroneLoad toDroneLoad(Drone drone){
+    public DroneLoad toDroneLoad(Drone drone, LocalDateTime startTime){
         return DroneLoad
                 .builder()
-                .startTime(LocalDateTime.now())
+                .startTime(startTime)
                 .drone(drone)
                 .build();
     }
