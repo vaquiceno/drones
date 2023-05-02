@@ -1,16 +1,13 @@
 package com.drones.models.responses;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@Data
 public class DroneResponse {
     private Integer droneId;
     private String serialNumber;

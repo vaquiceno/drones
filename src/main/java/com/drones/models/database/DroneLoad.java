@@ -2,9 +2,8 @@ package com.drones.models.database;
 
 
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.Entity;
@@ -24,8 +23,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 @Entity
 @Table( name = "Drone_Load")

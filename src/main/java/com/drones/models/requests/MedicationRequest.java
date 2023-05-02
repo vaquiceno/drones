@@ -1,13 +1,13 @@
 package com.drones.models.requests;
 
-import lombok.Getter;
+import lombok.Data;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-@Getter
+@Data
 public class MedicationRequest {
     @NotBlank(message = "code is required")
     @Pattern(regexp = "^(?=.*[A-Z0-9])[A-Z0-9_]*$", message = "allowed only upper case letters, underscore and numbers")

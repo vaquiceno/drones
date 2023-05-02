@@ -1,7 +1,7 @@
 package com.drones.models.requests;
 
 import com.drones.utils.EnumValidator;
-import lombok.Getter;
+import lombok.Data;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -11,7 +11,7 @@ import static com.drones.models.database.Drone.Model;
 import static com.drones.utils.Constants.DEFAULT_DRONE_BATTERY_CAPACITY;
 import static com.drones.utils.Constants.DEFAULT_DRONE_WEIGHT_LIMIT;
 
-@Getter
+@Data
 public class DroneRequest {
     @NotBlank(message = "Serial number is required")
     @Size(max = 100, message = "serial number can have max 100 characters")

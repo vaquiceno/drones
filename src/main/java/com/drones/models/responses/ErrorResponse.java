@@ -1,10 +1,10 @@
 package com.drones.models.responses;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 @AllArgsConstructor
-@Getter
+@Data
 public class ErrorResponse {
     private String error;
 }

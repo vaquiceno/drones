@@ -3,9 +3,8 @@ package com.drones.models.database;
 
 import com.drones.models.ids.DroneLoadMedicationId;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.Entity;
@@ -20,8 +19,7 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 @Entity
 @IdClass(DroneLoadMedicationId.class)
