@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import static com.drones.models.database.Drone.Status.IDLE;
 import static com.drones.Mocks.baseDrone;
 import static com.drones.Mocks.baseDroneResponse;
 import static com.drones.Mocks.baseDroneLoad;
@@ -16,7 +16,7 @@ import static com.drones.Mocks.baseDroneIdNull;
 import static com.drones.Mocks.baseDroneLoadIdNullMedicationsNull;
 import static com.drones.Mocks.baseMedicationRequest;
 import static com.drones.Mocks.baseMedication;
-import static com.drones.Mocks.baseDroneGeneralException;
+import static com.drones.Mocks.baseDroneGeneralExceptionWeightLimit;
 import static com.drones.Mocks.baseErrorResponse;
 import static com.drones.Mocks.DRONE_LOAD_START_TIME;
 
@@ -31,16 +31,16 @@ class DroneMapperTest {
     @Test
     void toDroneResponse() {
         assertEquals(
-                subject.toDroneResponse(baseDrone),
-                baseDroneResponse
+                subject.toDroneResponse(baseDrone(IDLE)),
+                baseDroneResponse(IDLE)
         );
     }
 
     @Test
     void toDroneLoadResponse() {
         assertEquals(
-                subject.toDroneLoadResponse(baseDroneLoad),
-                baseDroneLoadResponse
+                subject.toDroneLoadResponse(baseDroneLoad(IDLE)),
+                baseDroneLoadResponse(IDLE)
         );
     }
 
@@ -55,7 +55,7 @@ class DroneMapperTest {
     @Test
     void toDrone() {
         assertEquals(
-                subject.toDrone(baseDroneRequest),
+                subject.toDrone(baseDroneRequest()),
                 baseDroneIdNull
         );
     }
@@ -63,7 +63,7 @@ class DroneMapperTest {
     @Test
     void toDroneLoad() {
         assertEquals(
-                subject.toDroneLoad(baseDrone, DRONE_LOAD_START_TIME),
+                subject.toDroneLoad(baseDrone(IDLE), DRONE_LOAD_START_TIME),
                 baseDroneLoadIdNullMedicationsNull
         );
     }
@@ -71,7 +71,7 @@ class DroneMapperTest {
     @Test
     void toMedication() {
         assertEquals(
-                subject.toMedication(baseMedicationRequest),
+                subject.toMedication(baseMedicationRequest()),
                 baseMedication
         );
     }
@@ -79,7 +79,7 @@ class DroneMapperTest {
     @Test
     void toErrorResponse() {
         assertEquals(
-                subject.toErrorResponse(baseDroneGeneralException),
+                subject.toErrorResponse(baseDroneGeneralExceptionWeightLimit),
                 baseErrorResponse
         );
     }
