@@ -128,3 +128,10 @@ Here you have a description of all endpoints. please Refer to the [postman](post
     }
 ]
 ```
+
+## Functional requirements mentioned
+* registering a drone: available in Register Drone endpoint
+* loading a drone with medication items: available in Loading Drone endpoint
+* checking loaded medication items for a given drone: available in Loaded Medications for a drone endpoint
+* checking available drones for loading: available in Get available drones endpoint
+* check drone battery level for a given drone: available in get particular drone endpoint
