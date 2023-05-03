@@ -5,6 +5,7 @@ import com.drones.models.database.DroneLoad;
 import com.drones.models.database.DroneLoadMedication;
 import com.drones.models.database.Medication;
 import com.drones.models.exceptions.DroneGeneralException;
+import com.drones.models.requests.DroneLoadMedicationsRequest;
 import com.drones.models.requests.DroneRequest;
 import com.drones.models.requests.MedicationRequest;
 import com.drones.models.responses.DroneLoadMedicationResponse;
@@ -89,17 +90,26 @@ public final class Mocks {
             .currentBatteryCapacity(DRONE_BATTERY_CAPACITY)
             .build();
 
-    public static final Medication baseMedication = Medication
-            .builder()
-            .code(MEDICATION_CODE)
-            .name(MEDICATION_NAME)
-            .weight(MEDICATION_WEIGHT)
-            .imageUrl(MEDICATION_IMAGE)
-            .build();
+    public static Medication baseMedication(String code,
+                                            String name,
+                                            Integer weight,
+                                            String imageUrl){
+        return Medication
+                .builder()
+                .code(code)
+                .name(name)
+                .weight(weight)
+                .imageUrl(imageUrl)
+                .build();
+    }
 
     public static final DroneLoadMedication baseDroneLoadMedication = DroneLoadMedication
             .builder()
-            .medication(baseMedication)
+            .medication(baseMedication(
+                    MEDICATION_CODE,
+                    MEDICATION_NAME,
+                    MEDICATION_WEIGHT,
+                    MEDICATION_IMAGE))
             .amount(MEDICATION_AMOUNT)
             .build();
 
@@ -123,11 +133,32 @@ public final class Mocks {
                 .build();
     }
 
-    public static final DroneLoad baseDroneLoadIdNullMedicationsNull = DroneLoad
-            .builder()
-            .startTime(DRONE_LOAD_START_TIME)
-            .drone(baseDrone(IDLE))
-            .build();
+    public static DroneLoad baseDroneLoadMedicationsNull(){
+        return DroneLoad
+                .builder()
+                .startTime(DRONE_LOAD_START_TIME)
+                .drone(baseDrone(IDLE))
+                .build();
+    }
+
+    public static DroneLoad baseDroneLoadMedicationsNull(Integer id){
+        return DroneLoad
+                .builder()
+                .id(id)
+                .startTime(DRONE_LOAD_START_TIME)
+                .drone(baseDrone(IDLE))
+                .build();
+    }
+
+    public static DroneLoad baseDroneLoad(Integer id, Status status, List<DroneLoadMedication> droneLoadMedications){
+        return DroneLoad
+                .builder()
+                .id(id)
+                .startTime(DRONE_LOAD_START_TIME)
+                .drone(baseDrone(status))
+                .droneLoadMedications(droneLoadMedications)
+                .build();
+    }
 
     public static DroneRequest baseDroneRequest(){
         DroneRequest droneRequest = new DroneRequest();
@@ -138,14 +169,25 @@ public final class Mocks {
         return droneRequest;
     }
 
-    public static MedicationRequest baseMedicationRequest(){
+    public static MedicationRequest baseMedicationRequest(String code,
+                                                          String name,
+                                                          Integer weight,
+                                                          String imageUrl,
+                                                          Integer amount){
         MedicationRequest medicationRequest = new MedicationRequest();
-        medicationRequest.setCode(MEDICATION_CODE);
-        medicationRequest.setName(MEDICATION_NAME);
-        medicationRequest.setWeight(MEDICATION_WEIGHT);
-        medicationRequest.setImageUrl(MEDICATION_IMAGE);
-        medicationRequest.setAmount(MEDICATION_AMOUNT);
+        medicationRequest.setCode(code);
+        medicationRequest.setName(name);
+        medicationRequest.setWeight(weight);
+        medicationRequest.setImageUrl(imageUrl);
+        medicationRequest.setAmount(amount);
         return medicationRequest;
+    }
+
+    public static DroneLoadMedicationsRequest baseDroneLoadMedicationsRequest(List<MedicationRequest> medicationRequest){
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = new DroneLoadMedicationsRequest();
+        droneLoadMedicationsRequest.setDroneId(DRONE_ID);
+        droneLoadMedicationsRequest.setMedicationRequest(medicationRequest);
+        return droneLoadMedicationsRequest;
     }
 
     public static DroneResponse baseDroneResponse(Status status){
@@ -176,6 +218,16 @@ public final class Mocks {
                 .startTime(DRONE_LOAD_START_TIME)
                 .drone(baseDroneResponse(status))
                 .medications(List.of(baseDroneLoadMedicationResponse))
+                .build();
+    }
+
+    public static DroneLoadResponse baseDroneLoadResponse(Status status, List<DroneLoadMedicationResponse> medications){
+        return DroneLoadResponse
+                .builder()
+                .loadId(DRONE_LOAD_ID)
+                .startTime(DRONE_LOAD_START_TIME)
+                .drone(baseDroneResponse(status))
+                .medications(medications)
                 .build();
     }
 

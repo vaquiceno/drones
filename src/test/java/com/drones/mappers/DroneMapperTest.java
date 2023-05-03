@@ -4,6 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static com.drones.Mocks.MEDICATION_AMOUNT;
+import static com.drones.Mocks.MEDICATION_CODE;
+import static com.drones.Mocks.MEDICATION_IMAGE;
+import static com.drones.Mocks.MEDICATION_NAME;
+import static com.drones.Mocks.MEDICATION_WEIGHT;
 import static com.drones.models.database.Drone.Status.IDLE;
 import static com.drones.Mocks.baseDrone;
 import static com.drones.Mocks.baseDroneResponse;
@@ -13,7 +19,7 @@ import static com.drones.Mocks.baseDroneLoadMedication;
 import static com.drones.Mocks.baseDroneLoadMedicationResponse;
 import static com.drones.Mocks.baseDroneRequest;
 import static com.drones.Mocks.baseDroneIdNull;
-import static com.drones.Mocks.baseDroneLoadIdNullMedicationsNull;
+import static com.drones.Mocks.baseDroneLoadMedicationsNull;
 import static com.drones.Mocks.baseMedicationRequest;
 import static com.drones.Mocks.baseMedication;
 import static com.drones.Mocks.baseDroneGeneralExceptionWeightLimit;
@@ -64,15 +70,25 @@ class DroneMapperTest {
     void toDroneLoad() {
         assertEquals(
                 subject.toDroneLoad(baseDrone(IDLE), DRONE_LOAD_START_TIME),
-                baseDroneLoadIdNullMedicationsNull
+                baseDroneLoadMedicationsNull()
         );
     }
 
     @Test
     void toMedication() {
         assertEquals(
-                subject.toMedication(baseMedicationRequest()),
-                baseMedication
+                subject.toMedication(baseMedicationRequest(
+                        MEDICATION_CODE,
+                        MEDICATION_NAME,
+                        MEDICATION_WEIGHT,
+                        MEDICATION_IMAGE,
+                        MEDICATION_AMOUNT
+                        )),
+                baseMedication(
+                        MEDICATION_CODE,
+                        MEDICATION_NAME,
+                        MEDICATION_WEIGHT,
+                        MEDICATION_IMAGE)
         );
     }
 
