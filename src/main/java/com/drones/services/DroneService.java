@@ -180,7 +180,6 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_LOADING);
         // set drone Status to LOADED
         drone.setStatus(LOADED);
-        droneRepository.save(drone);
         return droneMapper.toDroneLoadResponse(droneLoad);
     }
 
