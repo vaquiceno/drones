@@ -234,7 +234,6 @@ public class DroneService {
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_RETURNING);
         // set end time for this load
         droneLoad.setEndTime(LocalDateTime.now());
-        droneLoadRepository.save(droneLoad);
         // set drone Status to IDLE
         drone.setStatus(IDLE);
         return droneMapper.toDroneLoadResponse(droneLoad);
