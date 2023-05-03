@@ -84,6 +84,7 @@ class DroneServiceTest {
         Mockito.when(droneMapper.toDrone(baseDroneRequest())).thenReturn(baseDroneIdNull);
         Mockito.when(droneMapper.toDroneResponse(baseDrone(IDLE))).thenReturn(baseDroneResponse(IDLE));
         assertEquals(subject.registerDrone(baseDroneRequest()), baseDroneResponse(IDLE));
+        Mockito.verify(droneRepository, Mockito.times(1)).save(baseDroneIdNull);
     }
 
     @Test
@@ -103,6 +104,8 @@ class DroneServiceTest {
         Mockito.when(droneLoadRepository.findByDroneAndEndTimeNull(baseDrone(IDLE))).thenReturn(List.of(baseDroneLoad(IDLE)));
         Mockito.when(droneMapper.toDroneLoadResponse(baseDroneLoad(IDLE))).thenReturn(baseDroneLoadResponse(IDLE));
         assertEquals(subject.loadedMedications(DRONE_ID), baseDroneLoadResponse(IDLE));
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 
     @Test
@@ -114,6 +117,8 @@ class DroneServiceTest {
                         () -> subject.loadedMedications(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionZeroMoreActiveLoads.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 
     @Test
@@ -123,6 +128,8 @@ class DroneServiceTest {
         Mockito.when(droneRepository.save(baseDrone(LOADED))).thenReturn(baseDrone(LOADED));
         Mockito.when(droneMapper.toDroneLoadResponse(baseDroneLoad(LOADED))).thenReturn(baseDroneLoadResponse(LOADED));
         assertEquals(subject.loadedDrone(DRONE_ID), baseDroneLoadResponse(LOADED));
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(LOADING));
     }
 
     @Test
@@ -134,6 +141,8 @@ class DroneServiceTest {
                         () -> subject.loadedDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionNotLoading.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 
     @Test
@@ -143,6 +152,8 @@ class DroneServiceTest {
         Mockito.when(droneRepository.save(baseDrone(DELIVERING))).thenReturn(baseDrone(DELIVERING));
         Mockito.when(droneMapper.toDroneLoadResponse(baseDroneLoad(DELIVERING))).thenReturn(baseDroneLoadResponse(DELIVERING));
         assertEquals(subject.deliveringDrone(DRONE_ID), baseDroneLoadResponse(DELIVERING));
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(LOADED));
     }
 
     @Test
@@ -154,6 +165,8 @@ class DroneServiceTest {
                         () -> subject.deliveringDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionNotLoaded.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 
     @Test
@@ -165,6 +178,8 @@ class DroneServiceTest {
                         () -> subject.deliveringDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionMinimumBattery.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(LOADED, DRONE_BATTERY_CAPACITY_LOW));
     }
 
     @Test
@@ -174,6 +189,8 @@ class DroneServiceTest {
         Mockito.when(droneRepository.save(baseDrone(DELIVERED))).thenReturn(baseDrone(DELIVERED));
         Mockito.when(droneMapper.toDroneLoadResponse(baseDroneLoad(DELIVERED))).thenReturn(baseDroneLoadResponse(DELIVERED));
         assertEquals(subject.deliveredDrone(DRONE_ID), baseDroneLoadResponse(DELIVERED));
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(DELIVERING));
     }
 
     @Test
@@ -185,6 +202,8 @@ class DroneServiceTest {
                         () -> subject.deliveredDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionNotDelivering.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 
     @Test
@@ -194,6 +213,8 @@ class DroneServiceTest {
         Mockito.when(droneRepository.save(baseDrone(RETURNING))).thenReturn(baseDrone(RETURNING));
         Mockito.when(droneMapper.toDroneLoadResponse(baseDroneLoad(RETURNING))).thenReturn(baseDroneLoadResponse(RETURNING));
         assertEquals(subject.returningDrone(DRONE_ID), baseDroneLoadResponse(RETURNING));
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(DELIVERED));
     }
 
     @Test
@@ -205,6 +226,8 @@ class DroneServiceTest {
                         () -> subject.returningDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionNotDelivered.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 
     @Test
@@ -216,6 +239,8 @@ class DroneServiceTest {
                         () -> subject.returningDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionMinimumBattery.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(DELIVERED, DRONE_BATTERY_CAPACITY_LOW));
     }
 
     @Test
@@ -226,6 +251,8 @@ class DroneServiceTest {
         Mockito.when(droneRepository.save(baseDrone(IDLE))).thenReturn(baseDrone(IDLE));
         Mockito.when(droneMapper.toDroneLoadResponse(Mockito.any(DroneLoad.class))).thenReturn(baseDroneLoadResponse(IDLE));
         assertEquals(subject.idleDrone(DRONE_ID), baseDroneLoadResponse(IDLE));
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(RETURNING));
     }
 
     @Test
@@ -237,5 +264,7 @@ class DroneServiceTest {
                         () -> subject.idleDrone(DRONE_ID)).getMessage(),
                 baseDroneGeneralExceptionNotReturning.getMessage()
         );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
     }
 }
