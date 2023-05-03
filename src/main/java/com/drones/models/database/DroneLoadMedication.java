@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,6 +29,7 @@ public class DroneLoadMedication implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="drone_load_id", nullable=false)
+    @ToString.Exclude
     private DroneLoad droneLoad;
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
