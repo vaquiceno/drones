@@ -1,8 +1,8 @@
 package com.drones.services;
 
 import com.drones.mappers.DroneMapper;
+import com.drones.models.database.Drone;
 import com.drones.models.database.DroneLoad;
-import com.drones.models.database.DroneLoadMedication;
 import com.drones.models.database.Medication;
 import com.drones.models.exceptions.DroneGeneralException;
 import com.drones.models.requests.DroneLoadMedicationsRequest;
@@ -27,12 +27,17 @@ import static com.drones.Mocks.DRONE_BATTERY_CAPACITY_LOW;
 import static com.drones.Mocks.DRONE_ID;
 import static com.drones.Mocks.DRONE_LOAD_ID;
 import static com.drones.Mocks.baseDrone;
+import static com.drones.Mocks.baseDroneGeneralExceptionDroneNotFound;
+import static com.drones.Mocks.baseDroneGeneralExceptionDuplicatedCodesMedications;
 import static com.drones.Mocks.baseDroneGeneralExceptionMinimumBattery;
 import static com.drones.Mocks.baseDroneGeneralExceptionNotDelivered;
 import static com.drones.Mocks.baseDroneGeneralExceptionNotDelivering;
+import static com.drones.Mocks.baseDroneGeneralExceptionNotIdle;
 import static com.drones.Mocks.baseDroneGeneralExceptionNotLoaded;
 import static com.drones.Mocks.baseDroneGeneralExceptionNotLoading;
 import static com.drones.Mocks.baseDroneGeneralExceptionNotReturning;
+import static com.drones.Mocks.baseDroneGeneralExceptionOneMoreActiveLoads;
+import static com.drones.Mocks.baseDroneGeneralExceptionWeightLimit;
 import static com.drones.Mocks.baseDroneGeneralExceptionZeroMoreActiveLoads;
 import static com.drones.Mocks.baseDroneIdNull;
 import static com.drones.Mocks.baseDroneLoad;
@@ -138,10 +143,6 @@ class DroneServiceTest {
                 List.of(medicationRequest1, medicationRequest2)
         );
         List<Medication> medications = List.of(medication1, medication2);
-        List<DroneLoadMedication> droneLoadMedications = List.of(
-                DroneLoadMedication.builder().medication(medication1).droneLoad(baseDroneLoad(LOADING)).amount(2).build(),
-                DroneLoadMedication.builder().medication(medication2).droneLoad(baseDroneLoad(LOADING)).amount(3).build()
-        );
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
                 DroneLoadMedicationResponse
                         .builder()
@@ -168,11 +169,198 @@ class DroneServiceTest {
         Mockito.when(droneMapper.toDroneLoadResponse(Mockito.any(DroneLoad.class))).thenReturn(baseDroneLoadResponse(LOADING, droneLoadMedicationResponses));
         assertEquals(subject.loadingDrone(droneLoadMedicationsRequest), baseDroneLoadResponse(LOADING, droneLoadMedicationResponses));
         Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(LOADING));
         Mockito.verify(droneMapper, Mockito.times(2)).toMedication(medicationRequest1);
         Mockito.verify(droneMapper, Mockito.times(2)).toMedication(medicationRequest2);
         Mockito.verify(medicationRepository, Mockito.times(1)).saveAll(medications);
         Mockito.verify(droneLoadRepository, Mockito.times(1)).save(baseDroneLoadMedicationsNull());
         Mockito.verify(droneMapper, Mockito.times(1)).toDroneLoadResponse(Mockito.any(DroneLoad.class));
+    }
+
+    @Test
+    void loadingDroneDuplicatedCodesException() {
+        MedicationRequest medicationRequest1 = baseMedicationRequest(
+                "6985",
+                "Bread",
+                10,
+                "https://regex101.com//img.das",
+                2);
+        MedicationRequest medicationRequest2 = baseMedicationRequest(
+                "6985",
+                "Vine",
+                5,
+                null,
+                3);
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = baseDroneLoadMedicationsRequest(
+                List.of(medicationRequest1, medicationRequest2)
+        );
+        assertEquals(
+                assertThrows(DroneGeneralException.class,
+                        () -> subject.loadingDrone(droneLoadMedicationsRequest)).getMessage(),
+                baseDroneGeneralExceptionDuplicatedCodesMedications.getMessage()
+        );
+        Mockito.verify(droneRepository, Mockito.never()).findById(Mockito.any(Integer.class));
+        Mockito.verify(droneLoadRepository, Mockito.never()).findByDroneAndEndTimeNull(Mockito.any(Drone.class));
+        Mockito.verify(droneMapper, Mockito.never()).toMedication(Mockito.any(MedicationRequest.class));
+        Mockito.verify(medicationRepository, Mockito.never()).saveAll(Mockito.any());
+        Mockito.verify(droneLoadRepository, Mockito.never()).save(Mockito.any(DroneLoad.class));
+        Mockito.verify(droneMapper, Mockito.never()).toDroneLoadResponse(Mockito.any(DroneLoad.class));
+    }
+
+    @Test
+    void loadingDroneNotFoundException() {
+        MedicationRequest medicationRequest1 = baseMedicationRequest(
+                "6985",
+                "Bread",
+                10,
+                "https://regex101.com//img.das",
+                2);
+        MedicationRequest medicationRequest2 = baseMedicationRequest(
+                "69856",
+                "Vine",
+                5,
+                null,
+                3);
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = baseDroneLoadMedicationsRequest(
+                List.of(medicationRequest1, medicationRequest2)
+        );
+        Mockito.when(droneRepository.findById(DRONE_ID)).thenReturn(Optional.empty());
+        assertEquals(
+                assertThrows(DroneGeneralException.class,
+                        () -> subject.loadingDrone(droneLoadMedicationsRequest)).getMessage(),
+                baseDroneGeneralExceptionDroneNotFound.getMessage()
+        );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.never()).findByDroneAndEndTimeNull(Mockito.any(Drone.class));
+        Mockito.verify(droneMapper, Mockito.never()).toMedication(Mockito.any(MedicationRequest.class));
+        Mockito.verify(medicationRepository, Mockito.never()).saveAll(Mockito.any());
+        Mockito.verify(droneLoadRepository, Mockito.never()).save(Mockito.any(DroneLoad.class));
+        Mockito.verify(droneMapper, Mockito.never()).toDroneLoadResponse(Mockito.any(DroneLoad.class));
+    }
+
+    @Test
+    void loadingDroneNotIdleException() {
+        MedicationRequest medicationRequest1 = baseMedicationRequest(
+                "6985",
+                "Bread",
+                10,
+                "https://regex101.com//img.das",
+                2);
+        MedicationRequest medicationRequest2 = baseMedicationRequest(
+                "69856",
+                "Vine",
+                5,
+                null,
+                3);
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = baseDroneLoadMedicationsRequest(
+                List.of(medicationRequest1, medicationRequest2)
+        );
+        Mockito.when(droneRepository.findById(DRONE_ID)).thenReturn(Optional.ofNullable(baseDrone(RETURNING)));
+        assertEquals(
+                assertThrows(DroneGeneralException.class,
+                        () -> subject.loadingDrone(droneLoadMedicationsRequest)).getMessage(),
+                baseDroneGeneralExceptionNotIdle.getMessage()
+        );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.never()).findByDroneAndEndTimeNull(Mockito.any(Drone.class));
+        Mockito.verify(droneMapper, Mockito.never()).toMedication(Mockito.any(MedicationRequest.class));
+        Mockito.verify(medicationRepository, Mockito.never()).saveAll(Mockito.any());
+        Mockito.verify(droneLoadRepository, Mockito.never()).save(Mockito.any(DroneLoad.class));
+        Mockito.verify(droneMapper, Mockito.never()).toDroneLoadResponse(Mockito.any(DroneLoad.class));
+    }
+
+    @Test
+    void loadingDroneBatteryException() {
+        MedicationRequest medicationRequest1 = baseMedicationRequest(
+                "6985",
+                "Bread",
+                10,
+                "https://regex101.com//img.das",
+                2);
+        MedicationRequest medicationRequest2 = baseMedicationRequest(
+                "69856",
+                "Vine",
+                5,
+                null,
+                3);
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = baseDroneLoadMedicationsRequest(
+                List.of(medicationRequest1, medicationRequest2)
+        );
+        Mockito.when(droneRepository.findById(DRONE_ID)).thenReturn(Optional.ofNullable(baseDrone(IDLE, DRONE_BATTERY_CAPACITY_LOW)));
+        assertEquals(
+                assertThrows(DroneGeneralException.class,
+                        () -> subject.loadingDrone(droneLoadMedicationsRequest)).getMessage(),
+                baseDroneGeneralExceptionMinimumBattery.getMessage()
+        );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.never()).findByDroneAndEndTimeNull(Mockito.any(Drone.class));
+        Mockito.verify(droneMapper, Mockito.never()).toMedication(Mockito.any(MedicationRequest.class));
+        Mockito.verify(medicationRepository, Mockito.never()).saveAll(Mockito.any());
+        Mockito.verify(droneLoadRepository, Mockito.never()).save(Mockito.any(DroneLoad.class));
+        Mockito.verify(droneMapper, Mockito.never()).toDroneLoadResponse(Mockito.any(DroneLoad.class));
+    }
+
+    @Test
+    void loadingDroneWeightLimitException() {
+        MedicationRequest medicationRequest1 = baseMedicationRequest(
+                "6985",
+                "Bread",
+                10,
+                "https://regex101.com//img.das",
+                20);
+        MedicationRequest medicationRequest2 = baseMedicationRequest(
+                "69856",
+                "Vine",
+                5,
+                null,
+                3);
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = baseDroneLoadMedicationsRequest(
+                List.of(medicationRequest1, medicationRequest2)
+        );
+        Mockito.when(droneRepository.findById(DRONE_ID)).thenReturn(Optional.ofNullable(baseDrone(IDLE)));
+        assertEquals(
+                assertThrows(DroneGeneralException.class,
+                        () -> subject.loadingDrone(droneLoadMedicationsRequest)).getMessage(),
+                baseDroneGeneralExceptionWeightLimit.getMessage()
+        );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.never()).findByDroneAndEndTimeNull(Mockito.any(Drone.class));
+        Mockito.verify(droneMapper, Mockito.never()).toMedication(Mockito.any(MedicationRequest.class));
+        Mockito.verify(medicationRepository, Mockito.never()).saveAll(Mockito.any());
+        Mockito.verify(droneLoadRepository, Mockito.never()).save(Mockito.any(DroneLoad.class));
+        Mockito.verify(droneMapper, Mockito.never()).toDroneLoadResponse(Mockito.any(DroneLoad.class));
+    }
+
+    @Test
+    void loadingDroneOneMoreLoadsException() {
+        MedicationRequest medicationRequest1 = baseMedicationRequest(
+                "6985",
+                "Bread",
+                10,
+                "https://regex101.com//img.das",
+                2);
+        MedicationRequest medicationRequest2 = baseMedicationRequest(
+                "69856",
+                "Vine",
+                5,
+                null,
+                3);
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = baseDroneLoadMedicationsRequest(
+                List.of(medicationRequest1, medicationRequest2)
+        );
+        Mockito.when(droneRepository.findById(DRONE_ID)).thenReturn(Optional.ofNullable(baseDrone(IDLE)));
+        Mockito.when(droneLoadRepository.findByDroneAndEndTimeNull(baseDrone(IDLE))).thenReturn(List.of(baseDroneLoad(IDLE)));
+        assertEquals(
+                assertThrows(DroneGeneralException.class,
+                        () -> subject.loadingDrone(droneLoadMedicationsRequest)).getMessage(),
+                baseDroneGeneralExceptionOneMoreActiveLoads.getMessage()
+        );
+        Mockito.verify(droneRepository, Mockito.times(1)).findById(DRONE_ID);
+        Mockito.verify(droneLoadRepository, Mockito.times(1)).findByDroneAndEndTimeNull(baseDrone(IDLE));
+        Mockito.verify(droneMapper, Mockito.never()).toMedication(Mockito.any(MedicationRequest.class));
+        Mockito.verify(medicationRepository, Mockito.never()).saveAll(Mockito.any());
+        Mockito.verify(droneLoadRepository, Mockito.never()).save(Mockito.any(DroneLoad.class));
+        Mockito.verify(droneMapper, Mockito.never()).toDroneLoadResponse(Mockito.any(DroneLoad.class));
     }
 
     @Test

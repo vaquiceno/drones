@@ -21,7 +21,6 @@ import static com.drones.models.database.Drone.Model.Lightweight;
 import static com.drones.models.database.Drone.Status;
 import static com.drones.models.database.Drone.Status.IDLE;
 import static com.drones.utils.Constants.ERROR_MESSAGE_DRONE_NOT_FOUND;
-import static com.drones.utils.Constants.ERROR_MESSAGE_TOTAL_WEIGHT_MEDICATIONS;
 import static com.drones.utils.Constants.ERROR_MESSAGE_WEIGHT_LIMIT;
 import static com.drones.utils.Constants.ERROR_MESSAGE_DUPLICATED_CODES_MEDICATIONS;
 import static com.drones.utils.Constants.ERROR_MESSAGE_MINIMUM_BATTERY;
@@ -236,9 +235,6 @@ public final class Mocks {
 
     public static final DroneGeneralException baseDroneGeneralExceptionDroneNotFound
             = new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND);
-
-    public static final DroneGeneralException baseDroneGeneralExceptionTotalWeightMedications
-            = new DroneGeneralException(ERROR_MESSAGE_TOTAL_WEIGHT_MEDICATIONS);
 
     public static final DroneGeneralException baseDroneGeneralExceptionDuplicatedCodesMedications
             = new DroneGeneralException(ERROR_MESSAGE_DUPLICATED_CODES_MEDICATIONS);
