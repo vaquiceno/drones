@@ -88,6 +88,7 @@ class DroneControllerTest {
                 mocks.baseDroneResponse(1, "sn1", Lightweight.toString(), 500, 100, IDLE.toString()),
                 mocks.baseDroneResponse(2, "sn2", Middleweight.toString(), 500, 50, IDLE.toString())
         ));
+        Thread.sleep(5000);
     }
 
     @Test
@@ -104,6 +105,7 @@ class DroneControllerTest {
                 mocks.baseDroneResponse(1, "sn1", Lightweight.toString(), 500, 100, IDLE.toString()),
                 mocks.baseDroneResponse(2, "sn2", Middleweight.toString(), 500, 50, IDLE.toString())
         ));
+        Thread.sleep(5000);
     }
 
     @Test
@@ -120,6 +122,7 @@ class DroneControllerTest {
                 droneResponse,
                 mocks.baseDroneResponse(1, "sn1", Lightweight.toString(), 500, 100, IDLE.toString())
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -136,6 +139,7 @@ class DroneControllerTest {
                 droneLoadResponse,
                 new ErrorResponse(ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS)
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -156,6 +160,7 @@ class DroneControllerTest {
                 droneResponse.getDroneId(),
                 newDroneId
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -209,6 +214,7 @@ class DroneControllerTest {
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(LOADING, droneLoadMedicationResponses)
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -262,6 +268,7 @@ class DroneControllerTest {
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, LOADED, droneLoadMedicationResponses)
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -315,6 +322,7 @@ class DroneControllerTest {
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, DELIVERING, droneLoadMedicationResponses)
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -368,6 +376,7 @@ class DroneControllerTest {
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, DELIVERED, droneLoadMedicationResponses)
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -421,6 +430,7 @@ class DroneControllerTest {
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, RETURNING, droneLoadMedicationResponses)
         );
+        Thread.sleep(5000);
     }
 
     @Test
@@ -476,5 +486,6 @@ class DroneControllerTest {
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, IDLE, droneLoadMedicationResponses, mocks.DRONE_LOAD_END_TIME)
         );
+        Thread.sleep(5000);
     }
 }

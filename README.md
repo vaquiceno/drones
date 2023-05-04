@@ -8,7 +8,8 @@
 
 ## Running the project
 * Use java 11
-* execute run task from gradle (application/bootRun)
+* run: execute run task from gradle (application/bootRun)
+* build: execute build task from gradle (build/build)
 * for accessing database, go to http://localhost:8080/h2-console/ and press connect.
 
 ## Database Design
