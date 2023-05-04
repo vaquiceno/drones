@@ -37,9 +37,9 @@ import static com.drones.utils.Constants.ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOAD
 public final class Mocks {
 
     public static final Integer DRONE_ID = 1;
-    public static final String DRONE_SERIAL_NUMBER = "ABC";
-    public static final Integer DRONE_WEIGHT_LIMIT = 50;
-    public static final Integer DRONE_BATTERY_CAPACITY = 80;
+    public static final String DRONE_SERIAL_NUMBER = "sn1";
+    public static final Integer DRONE_WEIGHT_LIMIT = 500;
+    public static final Integer DRONE_BATTERY_CAPACITY = 100;
     public static final Integer DRONE_LOAD_ID = 1;
     public static final LocalDateTime DRONE_LOAD_START_TIME = LocalDateTime.of(
             2023,
@@ -48,9 +48,16 @@ public final class Mocks {
             19,
             27,
             18);
+    public static final LocalDateTime DRONE_LOAD_END_TIME = LocalDateTime.of(
+            2023,
+            3,
+            8,
+            19,
+            28,
+            18);
 
     public static final String MEDICATION_CODE = "XYZ";
-    public static final String MEDICATION_NAME = "Bread";
+    public static final String MEDICATION_NAME = "Meat";
     public static final Integer MEDICATION_WEIGHT = 10;
     public static final String MEDICATION_IMAGE = "/image/image.png";
     public static final Integer MEDICATION_AMOUNT = 2;
@@ -201,6 +208,36 @@ public final class Mocks {
                 .build();
     }
 
+    public static DroneResponse baseDroneResponse(Integer id, Status status){
+        return DroneResponse
+                .builder()
+                .droneId(id)
+                .serialNumber(DRONE_SERIAL_NUMBER)
+                .model(Lightweight.toString())
+                .weightLimit(DRONE_WEIGHT_LIMIT)
+                .currentBatteryCapacity(DRONE_BATTERY_CAPACITY)
+                .status(status.toString())
+                .build();
+    }
+
+    public static DroneResponse baseDroneResponse(
+            Integer droneId,
+            String serialNumber,
+            String model,
+            Integer weightLimit,
+            Integer currentBatteryCapacity,
+            String status){
+        return DroneResponse
+                .builder()
+                .droneId(droneId)
+                .serialNumber(serialNumber)
+                .model(model)
+                .weightLimit(weightLimit)
+                .currentBatteryCapacity(currentBatteryCapacity)
+                .status(status)
+                .build();
+    }
+
     public static final DroneLoadMedicationResponse baseDroneLoadMedicationResponse = DroneLoadMedicationResponse
             .builder()
             .code(MEDICATION_CODE)
@@ -226,6 +263,27 @@ public final class Mocks {
                 .loadId(DRONE_LOAD_ID)
                 .startTime(DRONE_LOAD_START_TIME)
                 .drone(baseDroneResponse(status))
+                .medications(medications)
+                .build();
+    }
+
+    public static DroneLoadResponse baseDroneLoadResponse(Integer droneId, Status status, List<DroneLoadMedicationResponse> medications){
+        return DroneLoadResponse
+                .builder()
+                .loadId(DRONE_LOAD_ID)
+                .startTime(DRONE_LOAD_START_TIME)
+                .drone(baseDroneResponse(droneId, status))
+                .medications(medications)
+                .build();
+    }
+
+    public static DroneLoadResponse baseDroneLoadResponse(Integer droneId, Status status, List<DroneLoadMedicationResponse> medications, LocalDateTime endTime){
+        return DroneLoadResponse
+                .builder()
+                .loadId(DRONE_LOAD_ID)
+                .startTime(DRONE_LOAD_START_TIME)
+                .endTime(endTime)
+                .drone(baseDroneResponse(droneId, status))
                 .medications(medications)
                 .build();
     }

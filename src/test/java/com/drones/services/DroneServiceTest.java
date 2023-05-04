@@ -305,7 +305,7 @@ class DroneServiceTest {
         MedicationRequest medicationRequest1 = baseMedicationRequest(
                 "6985",
                 "Bread",
-                10,
+                100,
                 "https://regex101.com//img.das",
                 20);
         MedicationRequest medicationRequest2 = baseMedicationRequest(
