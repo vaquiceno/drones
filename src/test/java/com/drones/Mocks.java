@@ -34,21 +34,21 @@ import static com.drones.utils.Constants.ERROR_MESSAGE_ONE_MORE_ACTIVE_LOADS;
 import static com.drones.utils.Constants.ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS;
 
 
-public final class Mocks {
+public class Mocks {
 
-    public static final Integer DRONE_ID = 1;
-    public static final String DRONE_SERIAL_NUMBER = "sn1";
-    public static final Integer DRONE_WEIGHT_LIMIT = 500;
-    public static final Integer DRONE_BATTERY_CAPACITY = 100;
-    public static final Integer DRONE_LOAD_ID = 1;
-    public static final LocalDateTime DRONE_LOAD_START_TIME = LocalDateTime.of(
+    public final Integer DRONE_ID = 1;
+    public final String DRONE_SERIAL_NUMBER = "sn1";
+    public final Integer DRONE_WEIGHT_LIMIT = 500;
+    public final Integer DRONE_BATTERY_CAPACITY = 100;
+    public final Integer DRONE_LOAD_ID = 1;
+    public final LocalDateTime DRONE_LOAD_START_TIME = LocalDateTime.of(
             2023,
             3,
             8,
             19,
             27,
             18);
-    public static final LocalDateTime DRONE_LOAD_END_TIME = LocalDateTime.of(
+    public final LocalDateTime DRONE_LOAD_END_TIME = LocalDateTime.of(
             2023,
             3,
             8,
@@ -56,15 +56,15 @@ public final class Mocks {
             28,
             18);
 
-    public static final String MEDICATION_CODE = "XYZ";
-    public static final String MEDICATION_NAME = "Meat";
-    public static final Integer MEDICATION_WEIGHT = 10;
-    public static final String MEDICATION_IMAGE = "/image/image.png";
-    public static final Integer MEDICATION_AMOUNT = 2;
+    public final String MEDICATION_CODE = "XYZ";
+    public final String MEDICATION_NAME = "Meat";
+    public final Integer MEDICATION_WEIGHT = 10;
+    public final String MEDICATION_IMAGE = "/image/image.png";
+    public final Integer MEDICATION_AMOUNT = 2;
 
-    public static final Integer DRONE_BATTERY_CAPACITY_LOW = 20;
+    public final Integer DRONE_BATTERY_CAPACITY_LOW = 20;
 
-    public static Drone baseDrone(Status status){
+    public Drone baseDrone(Status status){
         return Drone
                 .builder()
                 .id(DRONE_ID)
@@ -76,7 +76,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static Drone baseDrone(Status status, Integer batteryCapacity){
+    public Drone baseDrone(Status status, Integer batteryCapacity){
         return Drone
                 .builder()
                 .id(DRONE_ID)
@@ -88,7 +88,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static final Drone baseDroneIdNull = Drone
+    public final Drone baseDroneIdNull = Drone
             .builder()
             .serialNumber(DRONE_SERIAL_NUMBER)
             .model(Lightweight)
@@ -96,7 +96,7 @@ public final class Mocks {
             .currentBatteryCapacity(DRONE_BATTERY_CAPACITY)
             .build();
 
-    public static Medication baseMedication(String code,
+    public Medication baseMedication(String code,
                                             String name,
                                             Integer weight,
                                             String imageUrl){
@@ -109,7 +109,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static final DroneLoadMedication baseDroneLoadMedication = DroneLoadMedication
+    public final DroneLoadMedication baseDroneLoadMedication = DroneLoadMedication
             .builder()
             .medication(baseMedication(
                     MEDICATION_CODE,
@@ -119,7 +119,7 @@ public final class Mocks {
             .amount(MEDICATION_AMOUNT)
             .build();
 
-    public static DroneLoad baseDroneLoad(Status status, Integer batteryCapacity){
+    public DroneLoad baseDroneLoad(Status status, Integer batteryCapacity){
         return DroneLoad
                 .builder()
                 .id(DRONE_LOAD_ID)
@@ -129,7 +129,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoad baseDroneLoad(Status status){
+    public DroneLoad baseDroneLoad(Status status){
         return DroneLoad
                 .builder()
                 .id(DRONE_LOAD_ID)
@@ -139,7 +139,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoad baseDroneLoadMedicationsNull(){
+    public DroneLoad baseDroneLoadMedicationsNull(){
         return DroneLoad
                 .builder()
                 .startTime(DRONE_LOAD_START_TIME)
@@ -147,7 +147,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoad baseDroneLoadMedicationsNull(Integer id){
+    public DroneLoad baseDroneLoadMedicationsNull(Integer id){
         return DroneLoad
                 .builder()
                 .id(id)
@@ -156,7 +156,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoad baseDroneLoad(Integer id, Status status, List<DroneLoadMedication> droneLoadMedications){
+    public DroneLoad baseDroneLoad(Integer id, Status status, List<DroneLoadMedication> droneLoadMedications){
         return DroneLoad
                 .builder()
                 .id(id)
@@ -166,7 +166,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneRequest baseDroneRequest(){
+    public DroneRequest baseDroneRequest(){
         DroneRequest droneRequest = new DroneRequest();
         droneRequest.setSerialNumber(DRONE_SERIAL_NUMBER);
         droneRequest.setModel(Lightweight.toString());
@@ -175,7 +175,7 @@ public final class Mocks {
         return droneRequest;
     }
 
-    public static MedicationRequest baseMedicationRequest(String code,
+    public MedicationRequest baseMedicationRequest(String code,
                                                           String name,
                                                           Integer weight,
                                                           String imageUrl,
@@ -189,14 +189,14 @@ public final class Mocks {
         return medicationRequest;
     }
 
-    public static DroneLoadMedicationsRequest baseDroneLoadMedicationsRequest(List<MedicationRequest> medicationRequest){
+    public DroneLoadMedicationsRequest baseDroneLoadMedicationsRequest(List<MedicationRequest> medicationRequest){
         DroneLoadMedicationsRequest droneLoadMedicationsRequest = new DroneLoadMedicationsRequest();
         droneLoadMedicationsRequest.setDroneId(DRONE_ID);
         droneLoadMedicationsRequest.setMedicationRequest(medicationRequest);
         return droneLoadMedicationsRequest;
     }
 
-    public static DroneResponse baseDroneResponse(Status status){
+    public DroneResponse baseDroneResponse(Status status){
         return DroneResponse
                 .builder()
                 .droneId(DRONE_ID)
@@ -208,7 +208,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneResponse baseDroneResponse(Integer id, Status status){
+    public DroneResponse baseDroneResponse(Integer id, Status status){
         return DroneResponse
                 .builder()
                 .droneId(id)
@@ -220,7 +220,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneResponse baseDroneResponse(
+    public DroneResponse baseDroneResponse(
             Integer droneId,
             String serialNumber,
             String model,
@@ -238,7 +238,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static final DroneLoadMedicationResponse baseDroneLoadMedicationResponse = DroneLoadMedicationResponse
+    public final DroneLoadMedicationResponse baseDroneLoadMedicationResponse = DroneLoadMedicationResponse
             .builder()
             .code(MEDICATION_CODE)
             .name(MEDICATION_NAME)
@@ -247,7 +247,7 @@ public final class Mocks {
             .amount(MEDICATION_AMOUNT)
             .build();
 
-    public static DroneLoadResponse baseDroneLoadResponse(Status status){
+    public DroneLoadResponse baseDroneLoadResponse(Status status){
         return DroneLoadResponse
                 .builder()
                 .loadId(DRONE_LOAD_ID)
@@ -257,7 +257,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoadResponse baseDroneLoadResponse(Status status, List<DroneLoadMedicationResponse> medications){
+    public DroneLoadResponse baseDroneLoadResponse(Status status, List<DroneLoadMedicationResponse> medications){
         return DroneLoadResponse
                 .builder()
                 .loadId(DRONE_LOAD_ID)
@@ -267,7 +267,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoadResponse baseDroneLoadResponse(Integer droneId, Status status, List<DroneLoadMedicationResponse> medications){
+    public DroneLoadResponse baseDroneLoadResponse(Integer droneId, Status status, List<DroneLoadMedicationResponse> medications){
         return DroneLoadResponse
                 .builder()
                 .loadId(DRONE_LOAD_ID)
@@ -277,7 +277,7 @@ public final class Mocks {
                 .build();
     }
 
-    public static DroneLoadResponse baseDroneLoadResponse(Integer droneId, Status status, List<DroneLoadMedicationResponse> medications, LocalDateTime endTime){
+    public DroneLoadResponse baseDroneLoadResponse(Integer droneId, Status status, List<DroneLoadMedicationResponse> medications, LocalDateTime endTime){
         return DroneLoadResponse
                 .builder()
                 .loadId(DRONE_LOAD_ID)
@@ -288,43 +288,43 @@ public final class Mocks {
                 .build();
     }
 
-    public static final DroneGeneralException baseDroneGeneralExceptionWeightLimit
+    public final DroneGeneralException baseDroneGeneralExceptionWeightLimit
             = new DroneGeneralException(ERROR_MESSAGE_WEIGHT_LIMIT);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionDroneNotFound
+    public final DroneGeneralException baseDroneGeneralExceptionDroneNotFound
             = new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionDuplicatedCodesMedications
+    public final DroneGeneralException baseDroneGeneralExceptionDuplicatedCodesMedications
             = new DroneGeneralException(ERROR_MESSAGE_DUPLICATED_CODES_MEDICATIONS);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionMinimumBattery
+    public final DroneGeneralException baseDroneGeneralExceptionMinimumBattery
             = new DroneGeneralException(ERROR_MESSAGE_MINIMUM_BATTERY);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionNotIdle
+    public final DroneGeneralException baseDroneGeneralExceptionNotIdle
             = new DroneGeneralException(ERROR_MESSAGE_NOT_IDLE);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionNotLoading
+    public final DroneGeneralException baseDroneGeneralExceptionNotLoading
             = new DroneGeneralException(ERROR_MESSAGE_NOT_LOADING);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionNotLoaded
+    public final DroneGeneralException baseDroneGeneralExceptionNotLoaded
             = new DroneGeneralException(ERROR_MESSAGE_NOT_LOADED);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionNotDelivering
+    public final DroneGeneralException baseDroneGeneralExceptionNotDelivering
             = new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERING);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionNotDelivered
+    public final DroneGeneralException baseDroneGeneralExceptionNotDelivered
             = new DroneGeneralException(ERROR_MESSAGE_NOT_DELIVERED);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionNotReturning
+    public final DroneGeneralException baseDroneGeneralExceptionNotReturning
             = new DroneGeneralException(ERROR_MESSAGE_NOT_RETURNING);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionOneMoreActiveLoads
+    public final DroneGeneralException baseDroneGeneralExceptionOneMoreActiveLoads
             = new DroneGeneralException(ERROR_MESSAGE_ONE_MORE_ACTIVE_LOADS);
 
-    public static final DroneGeneralException baseDroneGeneralExceptionZeroMoreActiveLoads
+    public final DroneGeneralException baseDroneGeneralExceptionZeroMoreActiveLoads
             = new DroneGeneralException(ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS);
 
-    public static final ErrorResponse baseErrorResponse
+    public final ErrorResponse baseErrorResponse
             = new ErrorResponse(ERROR_MESSAGE_WEIGHT_LIMIT);
 
 }
