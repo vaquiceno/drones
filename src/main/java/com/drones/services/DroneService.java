@@ -27,7 +27,6 @@ import static com.drones.models.database.Drone.Status.DELIVERING;
 import static com.drones.models.database.Drone.Status.DELIVERED;
 import static com.drones.models.database.Drone.Status.RETURNING;
 import static com.drones.utils.Constants.ERROR_MESSAGE_DRONE_NOT_FOUND;
-import static com.drones.utils.Constants.ERROR_MESSAGE_TOTAL_WEIGHT_MEDICATIONS;
 import static com.drones.utils.Constants.ERROR_MESSAGE_WEIGHT_LIMIT;
 import static com.drones.utils.Constants.ERROR_MESSAGE_DUPLICATED_CODES_MEDICATIONS;
 import static com.drones.utils.Constants.DEFAULT_DRONE_MINIMUM_BATTERY;
@@ -111,10 +110,6 @@ public class DroneService {
         //look for Drone
         Drone drone = droneRepository.findById(droneLoadMedicationsRequest.getDroneId())
                 .orElseThrow(() -> new DroneGeneralException(ERROR_MESSAGE_DRONE_NOT_FOUND));
-        //check all DroneLoads are finished for this Drone (endTime not null)
-        List<DroneLoad> notFinishedLoads = droneLoadRepository.findByDroneAndEndTimeNull(drone);
-        if (notFinishedLoads.size() >= 1)
-            throw new DroneGeneralException(ERROR_MESSAGE_ONE_MORE_ACTIVE_LOADS);
         //check drone status
         if (drone.getStatus() != IDLE)
             throw new DroneGeneralException(ERROR_MESSAGE_NOT_IDLE);
@@ -124,10 +119,14 @@ public class DroneService {
         Integer totalWeight = droneLoadMedicationsRequest.getMedicationRequest().stream()
                 .map(medication -> medication.getWeight()*medication.getAmount())
                 .reduce(Integer::sum)
-                .orElseThrow(() -> new DroneGeneralException(ERROR_MESSAGE_TOTAL_WEIGHT_MEDICATIONS));
+                .orElse(0);
         // check for weight limit
         if (totalWeight > drone.getWeightLimit())
             throw new DroneGeneralException(ERROR_MESSAGE_WEIGHT_LIMIT);
+        //check all DroneLoads are finished for this Drone (endTime not null)
+        List<DroneLoad> notFinishedLoads = droneLoadRepository.findByDroneAndEndTimeNull(drone);
+        if (notFinishedLoads.size() >= 1)
+            throw new DroneGeneralException(ERROR_MESSAGE_ONE_MORE_ACTIVE_LOADS);
         //all validations have passed
         //save all medications
         List<Medication> medications = droneLoadMedicationsRequest.getMedicationRequest().stream().map(
