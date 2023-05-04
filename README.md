@@ -6,11 +6,17 @@
 * I used a three layer design: controllers, services and repositories
 * For Exception handling, I created a customExceptionHandler, which allows to retrieve Exceptions from validations as valid Json Responses 
 
-## Running the project
+## Running the project (IDE IntelliJ)
 * Use java 11
 * run: execute run task from gradle (application/bootRun)
+![img.png](img.png)
 * build: execute build task from gradle (build/build)
-* for accessing database, go to http://localhost:8080/h2-console/ and press connect.
+![img_1.png](img_1.png)
+* test: test are already included in build task, to see coverage, go to test folder and execute
+test with coverage
+![img_2.png](img_2.png)
+* for accessing database, go to http://localhost:8080/h2-console/ and press connect
+![img_3.png](img_3.png)
 
 ## Database Design
 I created these tables:
