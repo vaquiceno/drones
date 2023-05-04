@@ -196,6 +196,13 @@ public class Mocks {
         return droneLoadMedicationsRequest;
     }
 
+    public DroneLoadMedicationsRequest baseDroneLoadMedicationsRequest(Integer droneId, List<MedicationRequest> medicationRequest){
+        DroneLoadMedicationsRequest droneLoadMedicationsRequest = new DroneLoadMedicationsRequest();
+        droneLoadMedicationsRequest.setDroneId(droneId);
+        droneLoadMedicationsRequest.setMedicationRequest(medicationRequest);
+        return droneLoadMedicationsRequest;
+    }
+
     public DroneResponse baseDroneResponse(Status status){
         return DroneResponse
                 .builder()

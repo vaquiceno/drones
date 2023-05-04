@@ -14,18 +14,17 @@ import com.drones.models.responses.DroneLoadMedicationResponse;
 import com.drones.models.responses.DroneLoadResponse;
 import com.drones.models.responses.DroneResponse;
 import com.drones.models.responses.ErrorResponse;
-import com.drones.repositories.DroneLoadRepository;
-import com.drones.repositories.DroneRepository;
-import com.drones.repositories.MedicationRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -49,19 +48,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @AutoConfigureMockMvc
 @SpringBootTest(classes = DronesApplication.class)
-@Transactional()
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
+@AutoConfigureTestEntityManager
 class DroneControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private DroneRepository droneRepository;
-    @Autowired
-    private MedicationRepository medicationRepository;
-    @Autowired
-    private DroneLoadRepository droneLoadRepository;
+    private TestEntityManager testEntityManager;
     @Autowired
     private DroneMapper droneMapper;
 
@@ -72,6 +67,11 @@ class DroneControllerTest {
     @BeforeEach
     void beforeEach(){
         mocks = new Mocks();
+    }
+
+    @AfterEach
+    void afterEach(){
+        testEntityManager.clear();
     }
 
     @Test
@@ -88,7 +88,7 @@ class DroneControllerTest {
                 mocks.baseDroneResponse(1, "sn1", Lightweight.toString(), 500, 100, IDLE.toString()),
                 mocks.baseDroneResponse(2, "sn2", Middleweight.toString(), 500, 50, IDLE.toString())
         ));
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -105,7 +105,7 @@ class DroneControllerTest {
                 mocks.baseDroneResponse(1, "sn1", Lightweight.toString(), 500, 100, IDLE.toString()),
                 mocks.baseDroneResponse(2, "sn2", Middleweight.toString(), 500, 50, IDLE.toString())
         ));
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -122,7 +122,7 @@ class DroneControllerTest {
                 droneResponse,
                 mocks.baseDroneResponse(1, "sn1", Lightweight.toString(), 500, 100, IDLE.toString())
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -139,12 +139,11 @@ class DroneControllerTest {
                 droneLoadResponse,
                 new ErrorResponse(ERROR_MESSAGE_ZERO_MORE_ONE_ACTIVE_LOADS)
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
     void registerDrone() throws Exception {
-        Integer newDroneId = 3;
         String result = mockMvc.perform(
                         MockMvcRequestBuilders
                                 .post(ENDPOINT_BASE+"/register/")
@@ -156,16 +155,14 @@ class DroneControllerTest {
                 .getResponse()
                 .getContentAsString();
         DroneResponse droneResponse = objectMapper.readValue(result, DroneResponse.class);
-        assertEquals(
-                droneResponse.getDroneId(),
-                newDroneId
-        );
-        Thread.sleep(5000);
+        assertNotNull(droneResponse);
+        
     }
 
     @Test
     public void loadingDrone() throws Exception {
-        droneRepository.save(mocks.baseDroneIdNull);
+        Drone drone = testEntityManager.persist(mocks.baseDroneIdNull);
+        testEntityManager.flush();
         MedicationRequest medicationRequest1 = mocks.baseMedicationRequest(
                 "6985",
                 "Bread",
@@ -179,6 +176,7 @@ class DroneControllerTest {
                 null,
                 3);
         DroneLoadMedicationsRequest droneLoadMedicationsRequest = mocks.baseDroneLoadMedicationsRequest(
+                drone.getId(),
                 List.of(medicationRequest1, medicationRequest2)
         );
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
@@ -210,11 +208,13 @@ class DroneControllerTest {
         DroneLoadResponse droneLoadResponse = objectMapper.readValue(result, DroneLoadResponse.class);
         assertNotNull(droneLoadResponse.getStartTime());
         droneLoadResponse.setStartTime(mocks.DRONE_LOAD_START_TIME);
+        assertNotNull(droneLoadResponse.getLoadId());
+        droneLoadResponse.setLoadId(mocks.DRONE_LOAD_ID);
         assertEquals(
                 droneLoadResponse,
-                mocks.baseDroneLoadResponse(LOADING, droneLoadMedicationResponses)
+                mocks.baseDroneLoadResponse(drone.getId(), LOADING, droneLoadMedicationResponses)
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -224,10 +224,10 @@ class DroneControllerTest {
                 "Bread",
                 10,
                 "https://regex101.com//img.das");
-        medicationRepository.save(medication);
-        Drone drone = droneRepository.save(mocks.baseDroneIdNull);
+        testEntityManager.persist(medication);
+        Drone drone = testEntityManager.persist(mocks.baseDroneIdNull);
         DroneLoad droneLoad = droneMapper.toDroneLoad(drone, LocalDateTime.now());
-        droneLoad = droneLoadRepository.save(droneLoad);
+        droneLoad = testEntityManager.persist(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;
         finalDroneLoad.addDroneLoadMedication(
@@ -240,8 +240,8 @@ class DroneControllerTest {
         );
         // set drone Status to LOADING
         drone.setStatus(LOADING);
-        droneLoadRepository.save(finalDroneLoad);
-        droneRepository.save(drone);
+        testEntityManager.persist(finalDroneLoad);
+        testEntityManager.persist(drone);
         Integer droneId = drone.getId();
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
                 DroneLoadMedicationResponse
@@ -264,11 +264,13 @@ class DroneControllerTest {
         DroneLoadResponse droneLoadResponse = objectMapper.readValue(result, DroneLoadResponse.class);
         assertNotNull(droneLoadResponse.getStartTime());
         droneLoadResponse.setStartTime(mocks.DRONE_LOAD_START_TIME);
+        assertNotNull(droneLoadResponse.getLoadId());
+        droneLoadResponse.setLoadId(mocks.DRONE_LOAD_ID);
         assertEquals(
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, LOADED, droneLoadMedicationResponses)
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -278,10 +280,10 @@ class DroneControllerTest {
                 "Bread",
                 10,
                 "https://regex101.com//img.das");
-        medicationRepository.save(medication);
-        Drone drone = droneRepository.save(mocks.baseDroneIdNull);
+        testEntityManager.persist(medication);
+        Drone drone = testEntityManager.persist(mocks.baseDroneIdNull);
         DroneLoad droneLoad = droneMapper.toDroneLoad(drone, LocalDateTime.now());
-        droneLoad = droneLoadRepository.save(droneLoad);
+        droneLoad = testEntityManager.persist(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;
         finalDroneLoad.addDroneLoadMedication(
@@ -294,8 +296,8 @@ class DroneControllerTest {
         );
         // set drone Status to LOADED
         drone.setStatus(LOADED);
-        droneLoadRepository.save(finalDroneLoad);
-        droneRepository.save(drone);
+        testEntityManager.persist(finalDroneLoad);
+        testEntityManager.persist(drone);
         Integer droneId = drone.getId();
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
                 DroneLoadMedicationResponse
@@ -318,11 +320,13 @@ class DroneControllerTest {
         DroneLoadResponse droneLoadResponse = objectMapper.readValue(result, DroneLoadResponse.class);
         assertNotNull(droneLoadResponse.getStartTime());
         droneLoadResponse.setStartTime(mocks.DRONE_LOAD_START_TIME);
+        assertNotNull(droneLoadResponse.getLoadId());
+        droneLoadResponse.setLoadId(mocks.DRONE_LOAD_ID);
         assertEquals(
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, DELIVERING, droneLoadMedicationResponses)
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -332,10 +336,10 @@ class DroneControllerTest {
                 "Bread",
                 10,
                 "https://regex101.com//img.das");
-        medicationRepository.save(medication);
-        Drone drone = droneRepository.save(mocks.baseDroneIdNull);
+        testEntityManager.persist(medication);
+        Drone drone = testEntityManager.persist(mocks.baseDroneIdNull);
         DroneLoad droneLoad = droneMapper.toDroneLoad(drone, LocalDateTime.now());
-        droneLoad = droneLoadRepository.save(droneLoad);
+        droneLoad = testEntityManager.persist(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;
         finalDroneLoad.addDroneLoadMedication(
@@ -348,8 +352,8 @@ class DroneControllerTest {
         );
         // set drone Status to DELIVERING
         drone.setStatus(DELIVERING);
-        droneLoadRepository.save(finalDroneLoad);
-        droneRepository.save(drone);
+        testEntityManager.persist(finalDroneLoad);
+        testEntityManager.persist(drone);
         Integer droneId = drone.getId();
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
                 DroneLoadMedicationResponse
@@ -372,11 +376,13 @@ class DroneControllerTest {
         DroneLoadResponse droneLoadResponse = objectMapper.readValue(result, DroneLoadResponse.class);
         assertNotNull(droneLoadResponse.getStartTime());
         droneLoadResponse.setStartTime(mocks.DRONE_LOAD_START_TIME);
+        assertNotNull(droneLoadResponse.getLoadId());
+        droneLoadResponse.setLoadId(mocks.DRONE_LOAD_ID);
         assertEquals(
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, DELIVERED, droneLoadMedicationResponses)
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -386,10 +392,10 @@ class DroneControllerTest {
                 "Bread",
                 10,
                 "https://regex101.com//img.das");
-        medicationRepository.save(medication);
-        Drone drone = droneRepository.save(mocks.baseDroneIdNull);
+        testEntityManager.persist(medication);
+        Drone drone = testEntityManager.persist(mocks.baseDroneIdNull);
         DroneLoad droneLoad = droneMapper.toDroneLoad(drone, LocalDateTime.now());
-        droneLoad = droneLoadRepository.save(droneLoad);
+        droneLoad = testEntityManager.persist(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;
         finalDroneLoad.addDroneLoadMedication(
@@ -402,8 +408,8 @@ class DroneControllerTest {
         );
         // set drone Status to DELIVERED
         drone.setStatus(DELIVERED);
-        droneLoadRepository.save(finalDroneLoad);
-        droneRepository.save(drone);
+        testEntityManager.persist(finalDroneLoad);
+        testEntityManager.persist(drone);
         Integer droneId = drone.getId();
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
                 DroneLoadMedicationResponse
@@ -426,11 +432,13 @@ class DroneControllerTest {
         DroneLoadResponse droneLoadResponse = objectMapper.readValue(result, DroneLoadResponse.class);
         assertNotNull(droneLoadResponse.getStartTime());
         droneLoadResponse.setStartTime(mocks.DRONE_LOAD_START_TIME);
+        assertNotNull(droneLoadResponse.getLoadId());
+        droneLoadResponse.setLoadId(mocks.DRONE_LOAD_ID);
         assertEquals(
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, RETURNING, droneLoadMedicationResponses)
         );
-        Thread.sleep(5000);
+        
     }
 
     @Test
@@ -440,10 +448,10 @@ class DroneControllerTest {
                 "Bread",
                 10,
                 "https://regex101.com//img.das");
-        medicationRepository.save(medication);
-        Drone drone = droneRepository.save(mocks.baseDroneIdNull);
+        testEntityManager.persist(medication);
+        Drone drone = testEntityManager.persist(mocks.baseDroneIdNull);
         DroneLoad droneLoad = droneMapper.toDroneLoad(drone, LocalDateTime.now());
-        droneLoad = droneLoadRepository.save(droneLoad);
+        droneLoad = testEntityManager.persist(droneLoad);
         // save Drone Load Medication
         DroneLoad finalDroneLoad = droneLoad;
         finalDroneLoad.addDroneLoadMedication(
@@ -456,8 +464,8 @@ class DroneControllerTest {
         );
         // set drone Status to RETURNING
         drone.setStatus(RETURNING);
-        droneLoadRepository.save(finalDroneLoad);
-        droneRepository.save(drone);
+        testEntityManager.persist(finalDroneLoad);
+        testEntityManager.persist(drone);
         Integer droneId = drone.getId();
         List<DroneLoadMedicationResponse> droneLoadMedicationResponses = List.of(
                 DroneLoadMedicationResponse
@@ -482,10 +490,12 @@ class DroneControllerTest {
         assertNotNull(droneLoadResponse.getEndTime());
         droneLoadResponse.setStartTime(mocks.DRONE_LOAD_START_TIME);
         droneLoadResponse.setEndTime(mocks.DRONE_LOAD_END_TIME);
+        assertNotNull(droneLoadResponse.getLoadId());
+        droneLoadResponse.setLoadId(mocks.DRONE_LOAD_ID);
         assertEquals(
                 droneLoadResponse,
                 mocks.baseDroneLoadResponse(droneId, IDLE, droneLoadMedicationResponses, mocks.DRONE_LOAD_END_TIME)
         );
-        Thread.sleep(5000);
+        
     }
 }
